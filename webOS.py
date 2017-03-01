@@ -195,8 +195,9 @@ class WebosCommand(sublime_plugin.TextCommand):
       
   def is_visible(self):
     s = sublime.load_settings("webOS.sublime-settings")
-    if not os.getenv(s.get('CLIPATH')):
-      s.erase('CLIPATH')
+    # FIXME: Line below gives: TypeError: str expected, not NoneType
+    # if not os.getenv(s.get('CLIPATH')):
+    #   s.erase('CLIPATH')
 
     if not s.get('CLIPATH'):
       if os.getenv('WEBOS_CLI_WD'):

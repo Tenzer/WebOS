@@ -7,10 +7,11 @@ from webOS.webOS import WebosCommand
 
 s = sublime.load_settings("Preferences.sublime-settings")
 current = s.get("auto_complete_triggers", [])
-if not {"characters":":/.","selector":"source.js"} in current:
-  current.append(
-      {"characters":":/.","selector":"source.js"}
-  )
+# FIXME: Line below gives: TypeError: argument of type 'NoneType' is not iterable
+# if not {"characters":":/.","selector":"source.js"} in current:
+#   current.append(
+#       {"characters":":/.","selector":"source.js"}
+#   )
 s.set("auto_complete_triggers", current)
 
 class webOSAutoComplete(sublime_plugin.EventListener):
