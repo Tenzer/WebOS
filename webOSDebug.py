@@ -1,8 +1,6 @@
 import os
-import subprocess
 import sublime
 import sublime_plugin
-import json
 
 from webOS.webOS import WebosCommand
 
@@ -12,7 +10,7 @@ class WebosDebugCommand(sublime_plugin.WindowCommand, WebosCommand):
     appinfo_data = None
 
     def run(self, paths=None):
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         global appinfo_path
         global appinfo_data
 
@@ -31,6 +29,6 @@ class WebosDebugCommand(sublime_plugin.WindowCommand, WebosCommand):
         ares_command = 'ares-launch'
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
-        # command = ['ares-launch', '-d', s.get('target'), '-i', id]
-        command = [ares_command, '-d', s.get('target'), '-i', '-o', id]
+        # command = ['ares-launch', '-d', settings.get('target'), '-i', id]
+        command = [ares_command, '-d', settings.get('target'), '-i', '-o', id]
         self.run_command(command, show_status=False)

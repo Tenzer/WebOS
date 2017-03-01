@@ -1,7 +1,6 @@
 import os
 import sublime
 import sublime_plugin
-import json
 import webbrowser
 
 from webOS.webOS import WebosCommand
@@ -9,17 +8,17 @@ from webOS.webOS import WebosCommand
 
 class WebosInstalledappCommand(sublime_plugin.WindowCommand, WebosCommand):
     def run(self):
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         ares_command = 'ares-install'
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
-        # command = ['ares-install', '-l', s.get('target')]
-        command = [ares_command, '-l', s.get('target')]
-        self.run_command(command, status_message='Getting the installed apps list from ' + s.get('target'))
+        # command = ['ares-install', '-l', settings.get('target')]
+        command = [ares_command, '-l', settings.get('target')]
+        self.run_command(command, status_message='Getting the installed apps list from ' + settings.get('target'))
 
     def is_visible(self):
-        s = sublime.load_settings("webOS.sublime-settings")
-        sdktype = s.get("sdkType")
+        settings = sublime.load_settings("webOS.sublime-settings")
+        sdktype = settings.get("sdkType")
         if sdktype == "Signage":
             return False
         return True
@@ -27,18 +26,18 @@ class WebosInstalledappCommand(sublime_plugin.WindowCommand, WebosCommand):
 
 class WebosRunningappCommand(sublime_plugin.WindowCommand, WebosCommand):
     def run(self):
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         ares_command = 'ares-launch'
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
-        # command = ['ares-launch', '-r', s.get('target')]
-        command = [ares_command, '-r', s.get('target')]
+        # command = ['ares-launch', '-r', settings.get('target')]
+        command = [ares_command, '-r', settings.get('target')]
 
-        self.run_command(command, status_message='Getting the running apps list from ' + s.get('target'))
+        self.run_command(command, status_message='Getting the running apps list from ' + settings.get('target'))
 
     def is_visible(self):
-        s = sublime.load_settings("webOS.sublime-settings")
-        sdktype = s.get("sdkType")
+        settings = sublime.load_settings("webOS.sublime-settings")
+        sdktype = settings.get("sdkType")
         if sdktype == "Signage":
             return False
         return True
@@ -46,8 +45,8 @@ class WebosRunningappCommand(sublime_plugin.WindowCommand, WebosCommand):
 
 class WebosSdkHelpCommand(sublime_plugin.WindowCommand):
     def run(self):
-        s = sublime.load_settings("webOS.sublime-settings")
-        sdktype = s.get("sdkType")
+        settings = sublime.load_settings("webOS.sublime-settings")
+        sdktype = settings.get("sdkType")
         if sdktype == "TV" or sdktype == "PartnerTV":
             url = "http://developer.lge.com/webOSTV/develop/web-app/developer-tools/webos-tv-plugin-sublime/"
         elif sdktype == "Signage":
@@ -59,9 +58,9 @@ class WebosSdkHelpCommand(sublime_plugin.WindowCommand):
 
 class WebosSdkVersionCommand(sublime_plugin.WindowCommand):
     def run(self):
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         version_info = """
-  Sublime Text webOS Plugin version : """ + s.get('version') + """
+  Sublime Text webOS Plugin version : """ + settings.get('version') + """
   Copyright(C) 2014 LG Electronics
 """
         sublime.message_dialog(version_info)

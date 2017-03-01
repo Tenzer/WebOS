@@ -10,7 +10,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
     appinfo_data = None
 
     def run(self, paths=None):
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         global appinfo_path
         global appinfo_data
 
@@ -29,22 +29,22 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
         ares_command = 'ares-install'
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
-        # command = ['ares-install', '-d', s.get('target'), '-l']
-        command = [ares_command, '-d', s.get('target'), '-l']
+        # command = ['ares-install', '-d', settings.get('target'), '-l']
+        command = [ares_command, '-d', settings.get('target'), '-l']
         self.run_command(command, callback=self.installedlist, status_message='checking the installed applications...')
 
     def installedlist(self, result):
         global appinfo_data
         global appinfo_path
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
 
         # sometime installed list is not return
         if not result:
             ares_command = 'ares-install'
             if self.get_cli_path():
                 ares_command = os.path.join(self.get_cli_path(), ares_command)
-            # command = ['ares-install', '-d', s.get('target'), '-l']
-            command = [ares_command, '-d', s.get('target'), '-l']
+            # command = ['ares-install', '-d', settings.get('target'), '-l']
+            command = [ares_command, '-d', settings.get('target'), '-l']
             self.run_command(command, callback=self.installedlist, stauts_message='checking the installed applications...')
             return
 
@@ -71,7 +71,6 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
         global appinfo_path
         global appinfo_data
 
-        s = sublime.load_settings("webOS.sublime-settings")
         ipk = appinfo_data['id'] + '_' + appinfo_data['version'] + '_all.ipk'
         self.install_action(ipk, callback=self.install_done, appinfo_path=appinfo_path)
 

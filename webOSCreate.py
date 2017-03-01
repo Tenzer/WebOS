@@ -1,8 +1,6 @@
 import os
-import subprocess
 import sublime
 import sublime_plugin
-import json
 
 from webOS.webOS import WebosCommand
 
@@ -13,7 +11,6 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
     create_path = None
 
     def run(self, paths=None):
-        s = sublime.load_settings("webOS.sublime-settings")
         self.template_list = []
         if not paths:
             paths = os.path.join(os.getenv('USERHOME', os.path.expanduser('~')))
@@ -41,7 +38,7 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
             sublime.active_window().show_input_panel('Input your application name', '', self.create_application, None, None)
 
     def create_application(self, name):
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         if isinstance(self.create_path, list):
             self.create_path = os.path.join(self.create_path[0], name)
         else:
@@ -50,10 +47,10 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
         # command = ['ares-generate', '-t', self.template_list[self.selected_index][0], self.create_path]
-        defaultId = 'id=com.yourdomain.app'
-        if s.get('sdkType') == 'Signage':
-            defaultId = 'id=com.lg.app.signage'
-        command = [ares_command, '-t', self.template_list[self.selected_index], '-p', defaultId, self.create_path]
+        default_id = 'id=com.yourdomain.app'
+        if settings.get('sdkType') == 'Signage':
+            default_id = 'id=com.lg.app.signage'
+        command = [ares_command, '-t', self.template_list[self.selected_index], '-p', default_id, self.create_path]
         self.run_command(command, callback=self.add_new_application, status_message='Generating the new application from template -' + name)
 
     def add_new_application(self, result):
@@ -68,7 +65,6 @@ class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
     create_path = None
 
     def run(self, paths=None):
-        s = sublime.load_settings("webOS.sublime-settings")
         self.service_list = []
         self.onSidebar = True
 
@@ -101,15 +97,15 @@ class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
     def create_service(self, name):
         if self.selected_index != -1:
             # self.selected_index = selected_index
-            s = sublime.load_settings("webOS.sublime-settings")
+            settings = sublime.load_settings("webOS.sublime-settings")
             ares_command = 'ares-generate'
             if self.get_cli_path():
                 ares_command = os.path.join(self.get_cli_path(), ares_command)
             # command = ['ares-generate', '-t', self.service_list[self.selected_index][0], self.create_path]
-            if s.get('sdkType') == 'Signage':
-                defaultId = 'com.lg.app.signage.' + name
+            if settings.get('sdkType') == 'Signage':
+                default_id = 'com.lg.app.signage.' + name
                 self.create_path = os.path.join(self.create_path, name)
-                command = [ares_command, '-t', self.service_list[self.selected_index], '-s', defaultId, self.create_path, '-f']
+                command = [ares_command, '-t', self.service_list[self.selected_index], '-s', default_id, self.create_path, '-f']
             else:
                 self.create_path = os.path.join(self.create_path, name)
                 command = [ares_command, '-t', self.service_list[self.selected_index], '-s', name, self.create_path, '-f']
@@ -132,7 +128,7 @@ class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
         else:
             dirname = os.path.basename(paths[0])
 
-        v = sublime.active_window().new_file()
+        view = sublime.active_window().new_file()
         sublime.active_window().active_view().set_name('appinfo.json')
         template = """{
     "id": "com.yourdomain.""" + dirname + """,
@@ -146,7 +142,7 @@ class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
     "enyoVersion": "2.3.0"
   }
   """
-        v.run_command("insert_snippet", {"contents": template})
+        view.run_command("insert_snippet", {"contents": template})
 
     def is_enabled(self, paths=None):
         if not paths:

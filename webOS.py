@@ -26,11 +26,11 @@ class CliThread(threading.Thread):
             if not output:
                 output = ''
             main_thread(self.command_done, output)
-        except subprocess.CalledProcessError as e:
-            main_thread(self.command_done, e.returncode)
+        except subprocess.CalledProcessError as error:
+            main_thread(self.command_done, error.returncode)
 
 
-class ThreadProgress():
+class ThreadProgress(object):
     """
     Animates an indicator, [=   ], in the status area while a thread runs
 
@@ -79,7 +79,6 @@ class WebosCommand(sublime_plugin.TextCommand):
         command = [arg for arg in command if arg]
         if not callback:
             callback = self.command_done
-        s = sublime.load_settings("webOS.sublime-settings")
         thread = CliThread(command, callback, **kwargs)
         thread.start()
 
@@ -122,8 +121,8 @@ class WebosCommand(sublime_plugin.TextCommand):
         if not appinfo_path:
             appinfo_path = self.get_appinfo_path()
         if appinfo_path and os.path.exists(os.path.join(appinfo_path, 'appinfo.json')):
-            with open(os.path.join(appinfo_path, 'appinfo.json'), 'rt') as f:
-                return json.load(f)
+            with open(os.path.join(appinfo_path, 'appinfo.json'), 'rt') as appinfo_file:
+                return json.load(appinfo_file)
         else:
             return False
 
@@ -147,25 +146,25 @@ class WebosCommand(sublime_plugin.TextCommand):
 
     def install_action(self, ipk, callback=None, appinfo_path=None):
         print("Install Action")
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         if not appinfo_path:
             appinfo_path = self.get_appinfo_path()
         ares_command = 'ares-install'
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
-        # command = ['ares-install', '-d', s.get('target'), os.path.join(appinfo_path,ipk)]
-        command = [ares_command, '-d', s.get('target'), os.path.join(appinfo_path, ipk)]
-        self.run_command(command, callback=callback, status_message='Installing the \'' + ipk + '\' into ' + s.get('target'))
+        # command = ['ares-install', '-d', settings.get('target'), os.path.join(appinfo_path,ipk)]
+        command = [ares_command, '-d', settings.get('target'), os.path.join(appinfo_path, ipk)]
+        self.run_command(command, callback=callback, status_message='Installing the \'' + ipk + '\' into ' + settings.get('target'))
 
     def launch_action(self, id, callback=None):
         print("Launch Action")
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         ares_command = 'ares-launch'
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
-        # command = ['ares-launch', '-d', s.get('target'), id]
-        command = [ares_command, '-d', s.get('target'), id]
-        self.run_command(command, callback=callback, status_message='Launching the appliction(' + id + ') to ' + s.get('target'))
+        # command = ['ares-launch', '-d', settings.get('target'), id]
+        command = [ares_command, '-d', settings.get('target'), id]
+        self.run_command(command, callback=callback, status_message='Launching the appliction(' + id + ') to ' + settings.get('target'))
 
     def get_sublime_path(self):
         if sublime.platform() == 'osx':
@@ -191,28 +190,28 @@ class WebosCommand(sublime_plugin.TextCommand):
         return output
 
     def get_cli_path(self):
-        s = sublime.load_settings("webOS.sublime-settings")
-        return os.getenv(s.get('CLIPATH'))
+        settings = sublime.load_settings("webOS.sublime-settings")
+        return os.getenv(settings.get('CLIPATH'))
 
     def is_visible(self):
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         # FIXME: Line below gives: TypeError: str expected, not NoneType
-        # if not os.getenv(s.get('CLIPATH')):
-        #   s.erase('CLIPATH')
+        # if not os.getenv(settings.get('CLIPATH')):
+        #   settings.erase('CLIPATH')
 
-        if not s.get('CLIPATH'):
+        if not settings.get('CLIPATH'):
             if os.getenv('WEBOS_CLI_WD'):
-                s.set('CLIPATH', 'WEBOS_CLI_WD')
-                s.set('sdkType', 'Watch')
+                settings.set('CLIPATH', 'WEBOS_CLI_WD')
+                settings.set('sdkType', 'Watch')
             elif os.getenv('WEBOS_CLI_TV'):
-                s.set('CLIPATH', 'WEBOS_CLI_TV')
-                s.set('sdkType', 'TV')
+                settings.set('CLIPATH', 'WEBOS_CLI_TV')
+                settings.set('sdkType', 'TV')
             elif os.getenv('WEBOS_CLI_SIGNAGE'):
-                s.set('CLIPATH', 'WEBOS_CLI_SIGNAGE')
-                s.set('sdkType', 'Signage')
+                settings.set('CLIPATH', 'WEBOS_CLI_SIGNAGE')
+                settings.set('sdkType', 'Signage')
             elif os.getenv('PARTNER_CLI_TV'):
-                s.set('CLIPATH', 'PARTNER_CLI_TV')
-                s.set('sdkType', 'PartnerTV')
+                settings.set('CLIPATH', 'PARTNER_CLI_TV')
+                settings.set('sdkType', 'PartnerTV')
             else:
                 return False
 

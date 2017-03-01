@@ -1,109 +1,103 @@
 import sublime
 import sublime_plugin
 import json
-import os
 
-from webOS.webOS import WebosCommand
-
-s = sublime.load_settings("Preferences.sublime-settings")
-current = s.get("auto_complete_triggers", [])
+settings = sublime.load_settings("Preferences.sublime-settings")
+current = settings.get("auto_complete_triggers", [])
 # FIXME: Line below gives: TypeError: argument of type 'NoneType' is not iterable
 # if not {"characters":":/.","selector":"source.js"} in current:
 #   current.append(
 #       {"characters":":/.","selector":"source.js"}
 #   )
-s.set("auto_complete_triggers", current)
+settings.set("auto_complete_triggers", current)
 
 
 class webOSAutoComplete(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
-        lunaServiceData, enyoCompletionData = self.get_completion_data()
-        lunaFlag = self.check_luna_protocol(view)
-        if lunaFlag:
+        luna_service_data, enyo_completion_data = self.get_completion_data()
+        luna_flag = self.check_luna_protocol(view)
+        if luna_flag:
             self.remove_dot_from_separators(view)
-            return ([(x["data"] + " ", x["data"]) for x in lunaServiceData])
+            return ([(x["data"] + " ", x["data"]) for x in luna_service_data])
         else:
             self.add_dot_to_separators(view)
-            prefixWord, trigger = self.get_prefix_word(view, view.sel()[0].end())
-            if trigger == "." and (prefixWord == "enyo" or prefixWord == "moon" or prefixWord == "onyx"):
-                return ([(x + " \t" + prefixWord + "-component", x) for x in enyoCompletionData[prefixWord]])
-            elif trigger == ":" and prefixWord == "method":
-                lunaAPI = self.find_lunaAPI(view)
-                if lunaAPI is not None:
-                    for Data in lunaServiceData:
-                        if Data['data'] == lunaAPI and prefixWord in Data:
-                            return ([(x + " ", "\"" + x + "\"") for x in Data[prefixWord]])
-                return ([])
+            prefix_word, trigger = self.get_prefix_word(view, view.sel()[0].end())
+            if trigger == "." and (prefix_word == "enyo" or prefix_word == "moon" or prefix_word == "onyx"):
+                return ([(x + " \t" + prefix_word + "-component", x) for x in enyo_completion_data[prefix_word]])
+            elif trigger == ":" and prefix_word == "method":
+                luna_api = self.find_luna_api(view)
+                if luna_api is not None:
+                    for data in luna_service_data:
+                        if data['data'] == luna_api and prefix_word in data:
+                            return ([(x + " ", "\"" + x + "\"") for x in data[prefix_word]])
+                return []
             else:
                 if self.check_method_protocols(view):
-                    lunaAPI = self.find_lunaAPI(view)
-                    if lunaAPI is not None:
-                        for Data in lunaServiceData:
-                            if Data['data'] == lunaAPI and prefixWord in Data:
-                                return ([(x + " \tLS2", x) for x in Data[prefixWord]])
-                return ([])
+                    luna_api = self.find_luna_api(view)
+                    if luna_api is not None:
+                        for data in luna_service_data:
+                            if data['data'] == luna_api and prefix_word in data:
+                                return ([(x + " \tLS2", x) for x in data[prefix_word]])
+                return []
 
     def check_method_protocols(self, view):
-        currentPosition = view.sel()[0].end() - 1
-        while currentPosition != 0 and view.substr(currentPosition - 1) != '(' and view.substr(currentPosition - 1) != '{' and view.substr(currentPosition - 1) != '\n':
-            if view.substr(currentPosition) == ":" and view.substr(view.word(currentPosition - 1)) == 'method':
+        current_position = view.sel()[0].end() - 1
+        while current_position != 0 and view.substr(current_position - 1) != '(' and view.substr(current_position - 1) != '{' and view.substr(current_position - 1) != '\n':
+            if view.substr(current_position) == ":" and view.substr(view.word(current_position - 1)) == 'method':
                 return True
-            currentPosition -= 1
+            current_position -= 1
         return False
 
-    def find_lunaAPI(self, view):
-        currentPosition = view.sel()[0].end() - 1
-        while currentPosition != 0 and view.substr(currentPosition - 1) != '(':
-            prefixWord, trigger = self.get_prefix_word(view, currentPosition)
-            if prefixWord == "luna" and trigger == "://":
+    def find_luna_api(self, view):
+        current_position = view.sel()[0].end() - 1
+        while current_position != 0 and view.substr(current_position - 1) != '(':
+            prefix_word, trigger = self.get_prefix_word(view, current_position)
+            if prefix_word == "luna" and trigger == "://":
                 self.remove_dot_from_separators(view)
-                lunaAPI = view.substr(view.word(sublime.Region(currentPosition, currentPosition + 1)))
+                luna_api = view.substr(view.word(sublime.Region(current_position, current_position + 1)))
                 self.return_separators(view)
-                return lunaAPI
-            currentPosition -= 1
+                return luna_api
+            current_position -= 1
         return None
 
     def check_luna_protocol(self, view):
-        currentPosition = view.sel()[0].end() - 1
+        current_position = view.sel()[0].end() - 1
         while True:
-            ch = view.substr(currentPosition)
-            if ch == '.' or ch == '/' or ch == ':' or ch.isalpha():
-                currentPosition -= 1
+            character = view.substr(current_position)
+            if character == '.' or character == '/' or character == ':' or character.isalpha():
+                current_position -= 1
             else:
                 break
-        trigger = view.substr(sublime.Region(currentPosition + 1, view.sel()[0].end()))
-        if trigger.find("luna://") != -1:
-            return True
-        else:
-            return False
+        trigger = view.substr(sublime.Region(current_position + 1, view.sel()[0].end()))
+        return trigger.find("luna://") != -1
 
     def get_completion_data(self):
         enyo_completion_url = sublime.packages_path() + '/webOS/lib/enyoAPI.json'
-        s = sublime.load_settings("webOS.sublime-settings")
-        luna_service_url = sublime.packages_path() + '/webOS/lib/LS2.' + s.get('sdkType') + '.json'
+        settings = sublime.load_settings("webOS.sublime-settings")
+        luna_service_url = sublime.packages_path() + '/webOS/lib/LS2.' + settings.get('sdkType') + '.json'
         if luna_service_url is not None:
-            with open(luna_service_url, 'rt') as f:
-                lunaServiceData = json.load(f)
+            with open(luna_service_url, 'rt') as file_object:
+                luna_service_data = json.load(file_object)
         else:
-            lunaServiceData = []
+            luna_service_data = []
         if enyo_completion_url is not None:
-            with open(enyo_completion_url, 'rt') as f:
-                enyoCompletionData = json.load(f)
+            with open(enyo_completion_url, 'rt') as file_object:
+                enyo_completion_data = json.load(file_object)
         else:
-            enyoCompletionData = {}
-        return lunaServiceData, enyoCompletionData
+            enyo_completion_data = {}
+        return luna_service_data, enyo_completion_data
 
-    def get_prefix_word(self, view, currentPosition):
+    def get_prefix_word(self, view, current_position):
         index = 1
         while True:
-            chRegion = sublime.Region(currentPosition - index - 1, currentPosition - index)
-            ch = view.substr(chRegion)
-            if ch.isalpha() or currentPosition == 1:
+            character_region = sublime.Region(current_position - index - 1, current_position - index)
+            character = view.substr(character_region)
+            if character.isalpha() or current_position == 1:
                 break
             index += 1
-        prefixWord = view.substr(view.word(sublime.Region(currentPosition - index - 1, currentPosition - index)))
-        trigger = view.substr(sublime.Region(currentPosition - index, currentPosition))
-        return prefixWord, trigger
+        prefix_word = view.substr(view.word(sublime.Region(current_position - index - 1, current_position - index)))
+        trigger = view.substr(sublime.Region(current_position - index, current_position))
+        return prefix_word, trigger
 
     def remove_dot_from_separators(self, view):
         word_separators = view.settings().get('word_separators')

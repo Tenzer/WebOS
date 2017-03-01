@@ -1,5 +1,4 @@
 import os
-import subprocess
 import sublime
 import sublime_plugin
 import json
@@ -18,30 +17,30 @@ tvDatas = []
 watchDatas = []
 signageDatas = []
 selectedTarget = -1
-s = sublime.load_settings("webOS.sublime-settings")
+settings = sublime.load_settings("webOS.sublime-settings")
 
-if not s.get('CLIPATH'):
+if not settings.get('CLIPATH'):
     if os.getenv('WEBOS_CLI_WD'):
-        s.set('CLIPATH', 'WEBOS_CLI_WD')
-        s.set('sdkType', 'Watch')
+        settings.set('CLIPATH', 'WEBOS_CLI_WD')
+        settings.set('sdkType', 'Watch')
     elif os.getenv('WEBOS_CLI_SIGNAGE'):
-        s.set('CLIPATH', 'WEBOS_CLI_SIGNAGE')
-        s.set('sdkType', 'Signage')
+        settings.set('CLIPATH', 'WEBOS_CLI_SIGNAGE')
+        settings.set('sdkType', 'Signage')
     elif os.getenv('PARTNER_CLI_TV'):
-        s.set('CLIPATH', 'PARTNER_CLI_TV')
-        s.set('sdkType', 'PartnerTV')
+        settings.set('CLIPATH', 'PARTNER_CLI_TV')
+        settings.set('sdkType', 'PartnerTV')
     else:
-        s.set('CLIPATH', 'WEBOS_CLI_TV')
-        s.set('sdkType', 'TV')
+        settings.set('CLIPATH', 'WEBOS_CLI_TV')
+        settings.set('sdkType', 'TV')
 
 
 class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
     def run(self, index):
         global deviceData
-        s = sublime.load_settings("webOS.sublime-settings")
-        s.set('target', deviceData[index]['name'])
-        s.set('CLIPATH', CLIPATH[deviceData[index]['sdkType']])
-        s.set('sdkType', deviceData[index]['sdkType'])
+        settings = sublime.load_settings("webOS.sublime-settings")
+        settings.set('target', deviceData[index]['name'])
+        settings.set('CLIPATH', CLIPATH[deviceData[index]['sdkType']])
+        settings.set('sdkType', deviceData[index]['sdkType'])
         sublime.save_settings("webOS.sublime-settings")
 
     def is_checked(self, index):
@@ -80,18 +79,18 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
 
     def set_selected_target_no(self):
         global deviceData, watchDatas, tvDatas, selectedTarget
-        s = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings("webOS.sublime-settings")
         index = 0
-        while (index < len(deviceData)):
-            if deviceData[index]['sdkType'] == s.get('sdkType') and deviceData[index]['name'] == s.get('target'):
+        while index < len(deviceData):
+            if deviceData[index]['sdkType'] == settings.get('sdkType') and deviceData[index]['name'] == settings.get('target'):
                 selectedTarget = index
                 break
             index += 1
         if index == len(deviceData):
             selectedTarget = 0
-            if s.get('sdkType') == "Watch":
+            if settings.get('sdkType') == "Watch":
                 selectedTarget = len(tvDatas)
-            s.set('target', deviceData[selectedTarget]['name'])
+            settings.set('target', deviceData[selectedTarget]['name'])
             sublime.save_settings("webOS.sublime-settings")
 
     def get_novacom_device_data(self):
@@ -116,10 +115,10 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
         if os.getenv('PARTNER_CLI_TV'):
             datas = self.get_target_list(CLIPATH='PARTNER_CLI_TV')
             try:
-                partnerTvDatas = json.loads(datas)
-                if len(partnerTvDatas) == 0:
-                    partnerTvDatas = json.loads(json.dumps(noTarget))
-                for data in partnerTvDatas:
+                partner_tv_datas = json.loads(datas)
+                if len(partner_tv_datas) == 0:
+                    partner_tv_datas = json.loads(json.dumps(noTarget))
+                for data in partner_tv_datas:
                     data['sdkType'] = 'PartnerTV'
                     deviceData.append(data)
             except ValueError:

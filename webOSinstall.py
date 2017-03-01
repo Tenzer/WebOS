@@ -1,8 +1,6 @@
 import os
-import subprocess
 import sublime
 import sublime_plugin
-import json
 
 from webOS.webOS import WebosCommand
 
@@ -11,7 +9,6 @@ class WebosInstallCommand(sublime_plugin.WindowCommand, WebosCommand):
     appinfo_path = None
 
     def run(self, paths=None):
-        s = sublime.load_settings("webOS.sublime-settings")
         if not paths:
             appinfo_path = self.get_appinfo_path()
         elif not os.path.isdir(paths[0]):
@@ -31,7 +28,6 @@ class WebosInstallCommand(sublime_plugin.WindowCommand, WebosCommand):
             self.install_action(ipk, appinfo_path=appinfo_path)
 
     def package_done(self, result):
-        s = sublime.load_settings("webOS.sublime-settings")
         global appinfo_path
         appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
         ipk = appinfo_data['id'] + '_' + appinfo_data['version'] + '_all.ipk'
