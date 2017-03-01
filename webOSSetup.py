@@ -111,7 +111,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
           data['sdkType'] = 'TV'
           deviceData.append(data)
       except ValueError:
-        print "TV CLI ERROR"
+        print("TV CLI ERROR")
     
     if os.getenv('PARTNER_CLI_TV'):
       datas = self.get_target_list(CLIPATH='PARTNER_CLI_TV')
@@ -123,7 +123,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
           data['sdkType'] = 'PartnerTV'
           deviceData.append(data)
       except ValueError:
-        print "Partner TV CLI ERROR"
+        print("Partner TV CLI ERROR")
         
     if os.getenv('WEBOS_CLI_WD'):
       datas = self.get_target_list(CLIPATH='WEBOS_CLI_WD')
@@ -135,7 +135,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
           data['sdkType'] = 'Watch'
           deviceData.append(data)
       except ValueError:
-        print "Watch CLI ERROR"
+        print("Watch CLI ERROR")
     
     if os.getenv('WEBOS_CLI_SIGNAGE'):
       datas = self.get_target_list(CLIPATH='WEBOS_CLI_SIGNAGE')
@@ -147,7 +147,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
           data['sdkType'] = 'Signage'
           deviceData.append(data)
       except ValueError:
-        print "Signage CLI ERROR"
+        print("Signage CLI ERROR")
 
 class WebosSetupAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
   def run(self, paths=None):
