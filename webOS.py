@@ -25,7 +25,7 @@ class CliThread(threading.Thread):
       if not output:
         output = ''
       main_thread(self.command_done, output)
-    except subprocess.CalledProcessError, e:   
+    except subprocess.CalledProcessError as e:   
       main_thread(self.command_done, e.returncode)
       
 class ThreadProgress():
