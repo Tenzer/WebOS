@@ -1,0 +1,14 @@
+<snippet>
+	<content><![CDATA[enyo.kind({
+	name:"${1:MyNewKind}",
+	kind:"${2:enyo.object}",
+	components:[$3
+	],
+	create: function(){
+		this.inherited(arguments);
+	}
+});]]></content>
+	<tabTrigger>enyo.kind</tabTrigger>
+	<scope>source.js</scope>
+	<description>enyokind</description>
+</snippet>

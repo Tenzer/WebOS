@@ -1,0 +1,9 @@
+[
+	{ "keys": ["ctrl+alt+a"], "command": "webos_create_application"},
+	{ "keys": ["ctrl+alt+j"], "command": "webos_create_service"},
+	{ "keys": ["ctrl+alt+p"], "command": "webos_package", "args":{"mode":"minify"}},
+	{ "keys": ["ctrl+alt+b"], "command": "webos_preview"},
+	{ "keys": ["ctrl+alt+i"], "command": "webos_install"},
+	{ "keys": ["ctrl+alt+l"], "command": "webos_launch"},
+	{ "keys": ["ctrl+alt+d"], "command": "webos_debug"}
+]
