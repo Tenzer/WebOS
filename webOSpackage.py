@@ -3,7 +3,7 @@ import subprocess
 import sublime
 import sublime_plugin
 
-from webOS import WebosCommand
+from webOS.webOS import WebosCommand
 
 class WebosPackageCommand(sublime_plugin.WindowCommand, WebosCommand):
   def run(self, mode, paths=None):

@@ -4,7 +4,7 @@ import sublime_plugin
 import json
 import webbrowser
 
-from webOS import WebosCommand
+from webOS.webOS import WebosCommand
 
 class WebosInstalledappCommand(sublime_plugin.WindowCommand, WebosCommand):
   def run(self):

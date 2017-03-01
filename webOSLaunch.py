@@ -2,7 +2,7 @@ import os
 import sublime
 import sublime_plugin
 
-from webOS import WebosCommand
+from webOS.webOS import WebosCommand
 
 class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
   appinfo_path = None

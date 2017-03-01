@@ -3,7 +3,7 @@ import sublime_plugin
 import json
 import os
 
-from webOS import WebosCommand
+from webOS.webOS import WebosCommand
 
 s = sublime.load_settings("Preferences.sublime-settings")
 current = s.get("auto_complete_triggers", [])
