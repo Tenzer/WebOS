@@ -46,8 +46,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
 
     def is_checked(self, index):
         global selectedTarget
-        if index == selectedTarget:
-            return True
+        return index == selectedTarget
 
     def is_visible(self, index):
         global deviceData
