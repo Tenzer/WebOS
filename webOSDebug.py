@@ -10,7 +10,7 @@ class WebosDebugCommand(sublime_plugin.WindowCommand, WebosCommand):
     appinfo_data = None
 
     def run(self, paths=None):
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
         global appinfo_path
         global appinfo_data
 
@@ -23,7 +23,7 @@ class WebosDebugCommand(sublime_plugin.WindowCommand, WebosCommand):
         appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
 
         if not appinfo_data:
-            self.view_output("ERROR : \"appinfo.json\" is not exist.")
+            self.view_output('ERROR : "appinfo.json" is not exist.')
             return
         id = appinfo_data['id']
         ares_command = 'ares-launch'

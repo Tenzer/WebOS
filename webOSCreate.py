@@ -38,7 +38,7 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
             sublime.active_window().show_input_panel('Input your application name', '', self.create_application, None, None)
 
     def create_application(self, name):
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
         if isinstance(self.create_path, list):
             self.create_path = os.path.join(self.create_path[0], name)
         else:
@@ -97,7 +97,7 @@ class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
     def create_service(self, name):
         if self.selected_index != -1:
             # self.selected_index = selected_index
-            settings = sublime.load_settings("webOS.sublime-settings")
+            settings = sublime.load_settings('webOS.sublime-settings')
             ares_command = 'ares-generate'
             if self.get_cli_path():
                 ares_command = os.path.join(self.get_cli_path(), ares_command)
@@ -130,8 +130,8 @@ class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
 
         view = sublime.active_window().new_file()
         sublime.active_window().active_view().set_name('appinfo.json')
-        template = """{
-    "id": "com.yourdomain.""" + dirname + """,
+        template = '''{
+    "id": "com.yourdomain.''' + dirname + ''',
     "version": "0.0.1",
     "vendor": "My Company",
     "type": "web",
@@ -141,8 +141,8 @@ class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
     "uiRevision":2,
     "enyoVersion": "2.3.0"
   }
-  """
-        view.run_command("insert_snippet", {"contents": template})
+  '''
+        view.run_command('insert_snippet', {'contents': template})
 
     def is_enabled(self, paths=None):
         if not paths:

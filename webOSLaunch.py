@@ -10,7 +10,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
     appinfo_data = None
 
     def run(self, paths=None):
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
         global appinfo_path
         global appinfo_data
 
@@ -23,7 +23,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
         appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
 
         if not appinfo_data:
-            self.view_output("ERROR : \"appinfo.json\" is not exist.")
+            self.view_output('ERROR : "appinfo.json" is not exist.')
             return
         id = appinfo_data['id']
         ares_command = 'ares-install'
@@ -36,7 +36,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
     def installedlist(self, result):
         global appinfo_data
         global appinfo_path
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
 
         # sometime installed list is not return
         if not result:
@@ -49,7 +49,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
             return
 
         if not appinfo_data:
-            self.view_output("ERROR : \"appinfo.json\" is not exist.")
+            self.view_output('ERROR : "appinfo.json" is not exist.')
             return
         id = appinfo_data['id']
 
@@ -107,14 +107,14 @@ class WebosInstallLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
         appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
 
         if not appinfo_data:
-            self.view_output("ERROR : \"appinfo.json\" is not exist.")
+            self.view_output('ERROR : "appinfo.json" is not exist.')
             return
 
         self.id = appinfo_data['id']
         self.ipk = self.id + '_' + appinfo_data['version'] + '_all.ipk'
 
         if not os.path.exists(os.path.join(appinfo_path, self.ipk)):
-            self.view_output("ERROR : \"" + self.ipk + "\" is not exist.")
+            self.view_output('ERROR : "' + self.ipk + '" is not exist.')
         else:
             self.install_action(self.ipk, callback=self.install_done, appinfo_path=appinfo_path)
 
@@ -137,7 +137,7 @@ class WebosPackageInstallLaunchCommand(sublime_plugin.WindowCommand, WebosComman
         appinfo_data = self.get_appinfo_data(appinfo_path=self.appinfo_path)
 
         if not appinfo_data:
-            self.view_output("ERROR : \"appinfo.json\" is not exist.")
+            self.view_output('ERROR : "appinfo.json" is not exist.')
             return
 
         self.id = appinfo_data['id']

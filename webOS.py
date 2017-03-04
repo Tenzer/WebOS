@@ -31,7 +31,7 @@ class CliThread(threading.Thread):
 
 
 class ThreadProgress(object):
-    """
+    '''
     Animates an indicator, [=   ], in the status area while a thread runs
 
     :param thread:
@@ -42,7 +42,7 @@ class ThreadProgress(object):
 
     :param success_message:
         The message to display once the thread is complete
-    """
+    '''
 
     def __init__(self, thread, message, success_message):
         self.thread = thread
@@ -93,13 +93,13 @@ class WebosCommand(sublime_plugin.TextCommand):
 
     def view_output(self, output, **kwargs):
         if not hasattr(self, 'output_view'):
-            self.output_view = sublime.active_window().get_output_panel("cli")
+            self.output_view = sublime.active_window().get_output_panel('cli')
         self.output_view.set_read_only(False)
         self.output_view.erase(self.output_view.begin_edit(), sublime.Region(0, self.output_view.size()))
         self.output_view.insert(self.output_view.begin_edit(), 0, output)
         self.output_view.end_edit(self.output_view.begin_edit())
         self.output_view.set_read_only(True)
-        sublime.active_window().run_command("show_panel", {"panel": "output.cli"})
+        sublime.active_window().run_command('show_panel', {'panel': 'output.cli'})
 
     def get_appinfo_path(self, currentfile=None):
         if not currentfile:
@@ -127,7 +127,7 @@ class WebosCommand(sublime_plugin.TextCommand):
             return False
 
     def package_action(self, mode='minify', callback=None, appinfo_path=None):
-        print("Package Action")
+        print('Package Action')
         if not appinfo_path:
             appinfo_path = self.get_appinfo_path()
 
@@ -145,8 +145,8 @@ class WebosCommand(sublime_plugin.TextCommand):
         self.run_command(command, callback=callback, status_message='Packaging the application - ' + appinfo_path)
 
     def install_action(self, ipk, callback=None, appinfo_path=None):
-        print("Install Action")
-        settings = sublime.load_settings("webOS.sublime-settings")
+        print('Install Action')
+        settings = sublime.load_settings('webOS.sublime-settings')
         if not appinfo_path:
             appinfo_path = self.get_appinfo_path()
         ares_command = 'ares-install'
@@ -157,8 +157,8 @@ class WebosCommand(sublime_plugin.TextCommand):
         self.run_command(command, callback=callback, status_message='Installing the \'' + ipk + '\' into ' + settings.get('target'))
 
     def launch_action(self, id, callback=None):
-        print("Launch Action")
-        settings = sublime.load_settings("webOS.sublime-settings")
+        print('Launch Action')
+        settings = sublime.load_settings('webOS.sublime-settings')
         ares_command = 'ares-launch'
         if self.get_cli_path():
             ares_command = os.path.join(self.get_cli_path(), ares_command)
@@ -190,11 +190,11 @@ class WebosCommand(sublime_plugin.TextCommand):
         return output
 
     def get_cli_path(self):
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
         return os.getenv(settings.get('CLIPATH'))
 
     def is_visible(self):
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
         # FIXME: Line below gives: TypeError: str expected, not NoneType
         # if not os.getenv(settings.get('CLIPATH')):
         #   settings.erase('CLIPATH')

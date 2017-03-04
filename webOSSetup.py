@@ -6,10 +6,10 @@ import json
 from webOS.webOS import WebosCommand
 
 CLIPATH = {
-    "TV": "WEBOS_CLI_TV",
-    "Watch": "WEBOS_CLI_WD",
-    "Signage": "WEBOS_CLI_SIGNAGE",
-    "PartnerTV": "PARTNER_CLI_TV"
+    'TV': 'WEBOS_CLI_TV',
+    'Watch': 'WEBOS_CLI_WD',
+    'Signage': 'WEBOS_CLI_SIGNAGE',
+    'PartnerTV': 'PARTNER_CLI_TV'
 }
 
 deviceData = []
@@ -17,7 +17,7 @@ tvDatas = []
 watchDatas = []
 signageDatas = []
 selectedTarget = -1
-settings = sublime.load_settings("webOS.sublime-settings")
+settings = sublime.load_settings('webOS.sublime-settings')
 
 if not settings.get('CLIPATH'):
     if os.getenv('WEBOS_CLI_WD'):
@@ -37,11 +37,11 @@ if not settings.get('CLIPATH'):
 class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
     def run(self, index):
         global deviceData
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
         settings.set('target', deviceData[index]['name'])
         settings.set('CLIPATH', CLIPATH[deviceData[index]['sdkType']])
         settings.set('sdkType', deviceData[index]['sdkType'])
-        sublime.save_settings("webOS.sublime-settings")
+        sublime.save_settings('webOS.sublime-settings')
 
     def is_checked(self, index):
         global selectedTarget
@@ -74,12 +74,12 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                 cnt += 1
 
             if cnt > 1:
-                return deviceData[index]['name'] + " (" + deviceData[index]['sdkType'] + ")"
+                return deviceData[index]['name'] + ' (' + deviceData[index]['sdkType'] + ')'
             return deviceData[index]['name']
 
     def set_selected_target_no(self):
         global deviceData, watchDatas, tvDatas, selectedTarget
-        settings = sublime.load_settings("webOS.sublime-settings")
+        settings = sublime.load_settings('webOS.sublime-settings')
         index = 0
         while index < len(deviceData):
             if deviceData[index]['sdkType'] == settings.get('sdkType') and deviceData[index]['name'] == settings.get('target'):
@@ -88,13 +88,13 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
             index += 1
         if index == len(deviceData):
             selectedTarget = 0
-            if settings.get('sdkType') == "Watch":
+            if settings.get('sdkType') == 'Watch':
                 selectedTarget = len(tvDatas)
             settings.set('target', deviceData[selectedTarget]['name'])
-            sublime.save_settings("webOS.sublime-settings")
+            sublime.save_settings('webOS.sublime-settings')
 
     def get_novacom_device_data(self):
-        noTarget = [{"name": "No Targets"}]
+        noTarget = [{'name': 'No Targets'}]
         global deviceData, watchDatas, tvDatas, signageDatas
         deviceData = []
         tvDatas = []
@@ -110,7 +110,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                     data['sdkType'] = 'TV'
                     deviceData.append(data)
             except ValueError:
-                print("TV CLI ERROR")
+                print('TV CLI ERROR')
 
         if os.getenv('PARTNER_CLI_TV'):
             datas = self.get_target_list(CLIPATH='PARTNER_CLI_TV')
@@ -122,7 +122,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                     data['sdkType'] = 'PartnerTV'
                     deviceData.append(data)
             except ValueError:
-                print("Partner TV CLI ERROR")
+                print('Partner TV CLI ERROR')
 
         if os.getenv('WEBOS_CLI_WD'):
             datas = self.get_target_list(CLIPATH='WEBOS_CLI_WD')
@@ -134,7 +134,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                     data['sdkType'] = 'Watch'
                     deviceData.append(data)
             except ValueError:
-                print("Watch CLI ERROR")
+                print('Watch CLI ERROR')
 
         if os.getenv('WEBOS_CLI_SIGNAGE'):
             datas = self.get_target_list(CLIPATH='WEBOS_CLI_SIGNAGE')
@@ -146,7 +146,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                     data['sdkType'] = 'Signage'
                     deviceData.append(data)
             except ValueError:
-                print("Signage CLI ERROR")
+                print('Signage CLI ERROR')
 
 
 class WebosSetupAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
