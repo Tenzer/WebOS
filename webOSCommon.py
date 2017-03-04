@@ -1,9 +1,10 @@
 import os
-import sublime
-import sublime_plugin
 import webbrowser
 
-from webOS.webOS import WebosCommand
+import sublime
+import sublime_plugin
+
+from .webOS import WebosCommand
 
 
 class WebosInstalledappCommand(sublime_plugin.WindowCommand, WebosCommand):

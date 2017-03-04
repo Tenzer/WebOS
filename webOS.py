@@ -1,11 +1,12 @@
+import functools
+import json
 import os
-import sys
 import subprocess
+import sys
+import threading
+
 import sublime
 import sublime_plugin
-import json
-import threading
-import functools
 
 
 def main_thread(callback, *args, **kwargs):

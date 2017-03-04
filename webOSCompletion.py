@@ -1,6 +1,7 @@
+import json
+
 import sublime
 import sublime_plugin
-import json
 
 settings = sublime.load_settings('Preferences.sublime-settings')
 current = settings.get('auto_complete_triggers', [])

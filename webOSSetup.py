@@ -1,9 +1,10 @@
+import json
 import os
+
 import sublime
 import sublime_plugin
-import json
 
-from webOS.webOS import WebosCommand
+from .webOS import WebosCommand
 
 CLIPATH = {
     'TV': 'WEBOS_CLI_TV',
