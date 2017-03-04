@@ -23,9 +23,7 @@ class CliThread(threading.Thread):
         try:
             shell = os.name == 'nt'
             proc = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell, universal_newlines=True)
-            output = proc.communicate()[0]
-            if not output:
-                output = ''
+            output = proc.communicate()[0] or ''
             main_thread(self.command_done, output)
         except subprocess.CalledProcessError as error:
             main_thread(self.command_done, error.returncode)
@@ -62,9 +60,9 @@ class ThreadProgress(object):
             return
 
         before = i % self.size
-        after = (self.size - 1) - before
+        after = self.size - 1 - before
 
-        sublime.status_message('%s [%s=%s]' % (self.message, ' ' * before, ' ' * after))
+        sublime.status_message('{} [{}={}]'.format(self.message, ' ' * before, ' ' * after))
 
         if not after:
             self.addend = -1
@@ -92,7 +90,7 @@ class WebosCommand(sublime_plugin.TextCommand):
             return
         self.view_output(result)
 
-    def view_output(self, output, **kwargs):
+    def view_output(self, output):
         if not hasattr(self, 'output_view'):
             self.output_view = sublime.active_window().get_output_panel('cli')
         self.output_view.set_read_only(False)
@@ -155,7 +153,7 @@ class WebosCommand(sublime_plugin.TextCommand):
             ares_command = os.path.join(self.get_cli_path(), ares_command)
         # command = ['ares-install', '-d', settings.get('target'), os.path.join(appinfo_path,ipk)]
         command = [ares_command, '-d', settings.get('target'), os.path.join(appinfo_path, ipk)]
-        self.run_command(command, callback=callback, status_message='Installing the \'' + ipk + '\' into ' + settings.get('target'))
+        self.run_command(command, callback=callback, status_message='Installing the "{}" into {}'.format(ipk, settings.get('target')))
 
     def launch_action(self, id, callback=None):
         print('Launch Action')
@@ -165,11 +163,11 @@ class WebosCommand(sublime_plugin.TextCommand):
             ares_command = os.path.join(self.get_cli_path(), ares_command)
         # command = ['ares-launch', '-d', settings.get('target'), id]
         command = [ares_command, '-d', settings.get('target'), id]
-        self.run_command(command, callback=callback, status_message='Launching the appliction(' + id + ') to ' + settings.get('target'))
+        self.run_command(command, callback=callback, status_message='Launching the application({}) to {}'.format(id, settings.get('target')))
 
     def get_sublime_path(self):
         if sublime.platform() == 'osx':
-            return '/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl'
+            return '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'
         if sublime.platform() == 'linux':
             return open('/proc/self/cmdline').read().split(chr(0))[0]
         return sys.executable
@@ -178,17 +176,14 @@ class WebosCommand(sublime_plugin.TextCommand):
         args.insert(0, self.get_sublime_path())
         return subprocess.Popen(args)
 
-    def get_target_list(self, CLIPATH=None):
+    def get_target_list(self, cli_path=None):
         shell = os.name == 'nt'
         ares_command = 'ares-setup-device'
-        if CLIPATH is not None:
-            ares_command = os.path.join(os.getenv(CLIPATH), ares_command)
+        if cli_path is not None:
+            ares_command = os.path.join(os.getenv(cli_path), ares_command)
         command = [ares_command, '-F']
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell, universal_newlines=True)
-        output = proc.communicate()[0]
-        if not output:
-            output = ''
-        return output
+        return proc.communicate()[0] or ''
 
     def get_cli_path(self):
         settings = sublime.load_settings('webOS.sublime-settings')
@@ -216,6 +211,4 @@ class WebosCommand(sublime_plugin.TextCommand):
             else:
                 return False
 
-        if os.getenv('WEBOS_CLI_WD') or os.getenv('WEBOS_CLI_TV') or os.getenv('WEBOS_CLI_SIGNAGE') or os.getenv('PARTNER_CLI_TV'):
-            return True
-        return False
+        return bool(os.getenv('WEBOS_CLI_WD') or os.getenv('WEBOS_CLI_TV') or os.getenv('WEBOS_CLI_SIGNAGE') or os.getenv('PARTNER_CLI_TV'))

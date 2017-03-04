@@ -30,5 +30,5 @@ class WebosInstallCommand(sublime_plugin.WindowCommand, WebosCommand):
     def package_done(self, result):
         global appinfo_path
         appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
-        ipk = appinfo_data['id'] + '_' + appinfo_data['version'] + '_all.ipk'
+        ipk = '{}_{}_all.ipk'.format(appinfo_data['id'], appinfo_data['version'])
         self.install_action(ipk)

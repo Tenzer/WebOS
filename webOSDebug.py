@@ -12,8 +12,7 @@ class WebosDebugCommand(sublime_plugin.WindowCommand, WebosCommand):
 
     def run(self, paths=None):
         settings = sublime.load_settings('webOS.sublime-settings')
-        global appinfo_path
-        global appinfo_data
+        global appinfo_path, appinfo_data
 
         if not paths:
             appinfo_path = self.get_appinfo_path()

@@ -1,3 +1,4 @@
+import json
 import os
 
 import sublime
@@ -26,8 +27,7 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
         self.run_command(command, callback=self.set_application_template_list, status_message='getting the template list...')
 
     def set_application_template_list(self, result):
-        bootplates = result.split('\n')
-        for bootplate in bootplates:
+        for bootplate in result.split('\n'):
             if bootplate:
                 bootplate = bootplate.split(' ')
                 self.template_list.append(bootplate[0])
@@ -52,7 +52,7 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
         if settings.get('sdkType') == 'Signage':
             default_id = 'id=com.lg.app.signage'
         command = [ares_command, '-t', self.template_list[self.selected_index], '-p', default_id, self.create_path]
-        self.run_command(command, callback=self.add_new_application, status_message='Generating the new application from template -' + name)
+        self.run_command(command, callback=self.add_new_application, status_message='Generating the new application from template - ' + name)
 
     def add_new_application(self, result):
         if result.find('Success'):
@@ -131,19 +131,18 @@ class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
 
         view = sublime.active_window().new_file()
         sublime.active_window().active_view().set_name('appinfo.json')
-        template = '''{
-    "id": "com.yourdomain.''' + dirname + ''',
-    "version": "0.0.1",
-    "vendor": "My Company",
-    "type": "web",
-    "main": "index.html",
-    "title": "singlepane",
-    "icon": "icon.png",
-    "uiRevision":2,
-    "enyoVersion": "2.3.0"
-  }
-  '''
-        view.run_command('insert_snippet', {'contents': template})
+        template = {
+            'id': 'com.yourdomain.' + dirname,
+            'version': '0.0.1',
+            'vendor': 'My Company',
+            'type': 'web',
+            'main': 'index.html',
+            'title': 'singlepane',
+            'icon': 'icon.png',
+            'uiRevision': 2,
+            'enyoVersion': '2.3.0',
+        }
+        view.run_command('insert_snippet', {'contents': json.dumps(template, indent=2)})
 
     def is_enabled(self, paths=None):
         if not paths:
@@ -153,6 +152,4 @@ class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
         else:
             appinfo_path = paths[0]
 
-        if self.get_appinfo_data(appinfo_path=appinfo_path):
-            return False
-        return True
+        return not bool(self.get_appinfo_data(appinfo_path=appinfo_path))
