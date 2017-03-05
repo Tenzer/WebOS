@@ -101,29 +101,41 @@ class WebosCommand(sublime_plugin.TextCommand):
         sublime.active_window().run_command('webos_view_output', {'output': result})
 
     def get_appinfo_path(self, currentfile=None):
-        if not currentfile:
-            currentfile = sublime.active_window().active_view().file_name()
-        dir_path = os.path.dirname(currentfile)
+        paths = [currentfile]
 
-        while True:
-            parent_dir_path = os.path.dirname(dir_path)
-            # root directory
-            if parent_dir_path == dir_path:
-                break
-            if os.path.exists(os.path.join(dir_path, 'appinfo.json')):
-                return dir_path
-            else:
-                dir_path = parent_dir_path
-        return os.path.dirname(currentfile)
+        project_data = sublime.active_window().project_data()
+        if project_data:
+            for folder in project_data.get('folders', {}):
+                paths.append(folder.get('path'))
+
+        paths.append(sublime.active_window().active_view().file_name())
+
+        for path in paths:
+            if not path:
+                continue
+
+            if os.path.isfile(path):
+                path = os.path.dirname(path)
+
+            while True:
+                if os.path.exists(os.path.join(path, 'appinfo.json')):
+                    return path
+
+                if os.path.dirname(path) == path:
+                    break
+
+                path = os.path.dirname(path)
+
+        return False
 
     def get_appinfo_data(self, appinfo_path=None):
-        if not appinfo_path:
-            appinfo_path = self.get_appinfo_path()
+        appinfo_path = appinfo_path or self.get_appinfo_path()
+
         if appinfo_path and os.path.exists(os.path.join(appinfo_path, 'appinfo.json')):
             with open(os.path.join(appinfo_path, 'appinfo.json'), 'rt') as appinfo_file:
                 return json.load(appinfo_file)
-        else:
-            return False
+
+        return False
 
     def package_action(self, mode='minify', callback=None, appinfo_path=None):
         print('Package Action')
