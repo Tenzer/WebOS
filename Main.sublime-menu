@@ -15,17 +15,7 @@
     ]
   },
   {
-    "id": "setupappinfomenu",
-    "caption": "Setup Appinfo.json",
-    "command": "webos_setup_appinfo"
-  },
-  {
     "caption": "-"
-  },
-  {
-    "id": "createappinfomenu",
-    "caption": "Create Appinfo.json",
-    "command": "webos_create_appinfo"
   },
   {
     "id": "createwebosapplicationmenu",
@@ -41,19 +31,19 @@
     "caption": "-"
   },
   {
-    "id": "packageasminifymenu",
-    "caption": "Package - minify mode",
-    "command": "webos_package",
-    "args":{
-      "mode":"minify"
-    }
-  },
-  {
     "id": "packageasnonminifymenu",
-    "caption": "Package - non-minify mode",
+    "caption": "Package - Non-minified",
     "command": "webos_package",
     "args":{
       "mode":"nominify"
+    }
+  },
+  {
+    "id": "packageasminifymenu",
+    "caption": "Package - Minified",
+    "command": "webos_package",
+    "args":{
+      "mode":"minify"
     }
   },
   {
@@ -61,7 +51,7 @@
   },
   {
     "id": "previewmenu",
-    "caption": "Run as browser",
+    "caption": "Run in Browser",
     "command": "webos_preview"
   },
   {
@@ -84,12 +74,12 @@
   },
   {
     "id": "installlaunchmenu",
-    "caption": "Install + Launch",
+    "caption": "Install and Launch",
     "command": "webos_install_launch"
   },
   {
     "id": "packageinstalllaunchmenu",
-    "caption": "Package + Install + Launch",
+    "caption": "Package, Install and Launch",
     "command": "webos_package_install_launch"
   },
   {
@@ -110,12 +100,12 @@
   },
   {
     "id":"webospluginversion",
-    "caption":"Help SublimePlugin",
+    "caption":"Help",
     "command":"webos_sdk_help"
   },
   {
     "id":"webospluginversion",
-    "caption":"About SublimePlugin",
+    "caption":"About",
     "command":"webos_sdk_version"
   }]
 }]

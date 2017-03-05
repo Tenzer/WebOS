@@ -118,32 +118,6 @@ class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
             self.add_folder_project(['-a', self.create_path])
         sublime.active_window().run_command('webos_view_output', {'output': result})
 
-
-class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
-    def run(self, paths=None):
-        if not paths:
-            currentfile = sublime.active_window().active_view().file_name()
-            dirname = os.path.basename(os.path.dirname(currentfile))
-        elif not os.path.isdir(paths[0]):
-            dirname = os.path.basename(os.path.dirname(paths[0]))
-        else:
-            dirname = os.path.basename(paths[0])
-
-        view = sublime.active_window().new_file()
-        sublime.active_window().active_view().set_name('appinfo.json')
-        template = {
-            'id': 'com.yourdomain.' + dirname,
-            'version': '0.0.1',
-            'vendor': 'My Company',
-            'type': 'web',
-            'main': 'index.html',
-            'title': 'singlepane',
-            'icon': 'icon.png',
-            'uiRevision': 2,
-            'enyoVersion': '2.3.0',
-        }
-        view.run_command('insert_snippet', {'contents': json.dumps(template, indent=2)})
-
     def is_enabled(self, paths=None):
         if not paths:
             appinfo_path = self.get_appinfo_path()

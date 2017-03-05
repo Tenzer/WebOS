@@ -131,26 +131,3 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                     deviceData.append(data)
             except ValueError:
                 print('Signage CLI ERROR')
-
-
-class WebosSetupAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):
-    def run(self, paths=None):
-        if not paths:
-            appinfo_path = self.get_appinfo_path()
-        elif not os.path.isdir(paths[0]):
-            appinfo_path = self.get_appinfo_path(currentfile=paths[0])
-        else:
-            appinfo_path = paths[0]
-
-        appinfo = os.path.join(appinfo_path, 'appinfo.json')
-        sublime.active_window().open_file(appinfo)
-
-    def is_enabled(self, paths=None):
-        if not paths:
-            appinfo_path = self.get_appinfo_path()
-        elif not os.path.isdir(paths[0]):
-            appinfo_path = self.get_appinfo_path(currentfile=paths[0])
-        else:
-            appinfo_path = paths[0]
-
-        return bool(self.get_appinfo_data(appinfo_path=appinfo_path))
