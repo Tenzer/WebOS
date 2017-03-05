@@ -191,24 +191,28 @@ class WebosCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
         settings = sublime.load_settings('webOS.sublime-settings')
-        # FIXME: Line below gives: TypeError: str expected, not NoneType
-        # if not os.getenv(settings.get('CLIPATH')):
-        #   settings.erase('CLIPATH')
+        if not os.getenv(settings.get('CLIPATH', '')):
+            settings.erase('CLIPATH')
+
+        if os.getenv(settings.get('CLIPATH', '')):
+            return True
 
         if not settings.get('CLIPATH'):
             if os.getenv('WEBOS_CLI_WD'):
                 settings.set('CLIPATH', 'WEBOS_CLI_WD')
                 settings.set('sdkType', 'Watch')
+                return True
             elif os.getenv('WEBOS_CLI_TV'):
                 settings.set('CLIPATH', 'WEBOS_CLI_TV')
                 settings.set('sdkType', 'TV')
+                return True
             elif os.getenv('WEBOS_CLI_SIGNAGE'):
                 settings.set('CLIPATH', 'WEBOS_CLI_SIGNAGE')
                 settings.set('sdkType', 'Signage')
+                return True
             elif os.getenv('PARTNER_CLI_TV'):
                 settings.set('CLIPATH', 'PARTNER_CLI_TV')
                 settings.set('sdkType', 'PartnerTV')
-            else:
-                return False
+                return True
 
-        return bool(os.getenv('WEBOS_CLI_WD') or os.getenv('WEBOS_CLI_TV') or os.getenv('WEBOS_CLI_SIGNAGE') or os.getenv('PARTNER_CLI_TV'))
+        return False
