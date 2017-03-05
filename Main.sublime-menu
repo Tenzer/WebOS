@@ -13,85 +13,107 @@
       { "command": "webos_set_target", "args": {"index": 4}, "checkbox": true },
       { "command": "webos_set_target", "args": {"index": 5}, "checkbox": true }
     ]
-  },  {
+  },
+  {
     "id": "setupappinfomenu",
     "caption": "Setup Appinfo.json",
     "command": "webos_setup_appinfo"
-  },{ 
-    "caption": "-" 
-  },{
+  },
+  {
+    "caption": "-"
+  },
+  {
     "id": "createappinfomenu",
     "caption": "Create Appinfo.json",
     "command": "webos_create_appinfo"
-  },{
+  },
+  {
     "id": "createwebosapplicationmenu",
     "caption": "Create webOS Application",
     "command": "webos_create_application"
-  },{
+  },
+  {
     "id": "createwebosservicemenu",
     "caption": "Create JS Service",
     "command": "webos_create_service"
-  },{ 
+  },
+  {
     "caption": "-"
-  },{
+  },
+  {
     "id": "packageasminifymenu",
     "caption": "Package - minify mode",
     "command": "webos_package",
     "args":{
       "mode":"minify"
     }
-  },{
+  },
+  {
     "id": "packageasnonminifymenu",
     "caption": "Package - non-minify mode",
     "command": "webos_package",
     "args":{
       "mode":"nominify"
     }
-  },{ 
+  },
+  {
     "caption": "-"
-  },{
+  },
+  {
     "id": "previewmenu",
     "caption": "Run as browser",
     "command": "webos_preview"
-  },{
+  },
+  {
     "id": "installmenu",
     "caption": "Install",
     "command": "webos_install"
-  },{
+  },
+  {
     "id": "launchmenu",
     "caption": "Launch",
     "command": "webos_launch"
-  },{
+  },
+  {
     "id": "Debugmenu",
     "caption": "Debug with Web Inspector",
     "command": "webos_debug"
-  },{ 
+  },
+  {
     "caption": "-"
-  },{
+  },
+  {
     "id": "installlaunchmenu",
     "caption": "Install + Launch",
     "command": "webos_install_launch"
-  },{
+  },
+  {
     "id": "packageinstalllaunchmenu",
     "caption": "Package + Install + Launch",
     "command": "webos_package_install_launch"
-  },{ 
+  },
+  {
     "caption": "-"
-  },{
+  },
+  {
     "id": "launchinstalledappmenu",
     "caption": "Installed Application List",
     "command": "webos_installedapp"
-  },{
+  },
+  {
     "id": "closeappmenu",
     "caption": "Running Application List",
     "command": "webos_runningapp"
-  },{ 
+  },
+  {
     "caption": "-"
-  },{
+  },
+  {
     "id":"webospluginversion",
     "caption":"Help SublimePlugin",
     "command":"webos_sdk_help"
-  },{
+  },
+  {
     "id":"webospluginversion",
     "caption":"About SublimePlugin",
     "command":"webos_sdk_version"
