@@ -57,7 +57,7 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
     def add_new_application(self, result):
         if result.find('Success'):
             self.add_folder_project(['-a', self.create_path])
-        self.view_output(result)
+        sublime.active_window().run_command('webos_view_output', {'output': result})
 
 
 class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
@@ -116,7 +116,7 @@ class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
     def add_new_service(self, result):
         if result.find('Success') and self.onSidebar:
             self.add_folder_project(['-a', self.create_path])
-        self.view_output(result)
+        sublime.active_window().run_command('webos_view_output', {'output': result})
 
 
 class WebosCreateAppinfoCommand(sublime_plugin.WindowCommand, WebosCommand):

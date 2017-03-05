@@ -18,7 +18,7 @@ class WebosInstallCommand(sublime_plugin.WindowCommand, WebosCommand):
         appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
 
         if not appinfo_data:
-            self.view_output('ERROR : "appinfo.json" is not exist.')
+            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR : "appinfo.json" does not exist.'})
             return
         ipk = appinfo_data['id'] + '_' + appinfo_data['version'] + '_all.ipk'
 

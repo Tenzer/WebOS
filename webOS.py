@@ -73,6 +73,16 @@ class ThreadProgress(object):
         sublime.set_timeout(lambda: self.run(i), 100)
 
 
+class WebosViewOutputCommand(sublime_plugin.TextCommand):
+    def run(self, edit, output=''):
+        view = sublime.active_window().get_output_panel('cli')
+        view.set_read_only(False)
+        view.erase(edit, sublime.Region(0, view.size()))
+        view.insert(edit, 0, output)
+        view.set_read_only(True)
+        sublime.active_window().run_command('show_panel', {'panel': 'output.cli'})
+
+
 class WebosCommand(sublime_plugin.TextCommand):
     def run_command(self, command, callback=None, show_status=True, status_message=None, **kwargs):
         command = [arg for arg in command if arg]
@@ -88,17 +98,7 @@ class WebosCommand(sublime_plugin.TextCommand):
     def command_done(self, result):
         if not result.strip():
             return
-        self.view_output(result)
-
-    def view_output(self, output):
-        if not hasattr(self, 'output_view'):
-            self.output_view = sublime.active_window().get_output_panel('cli')
-        self.output_view.set_read_only(False)
-        self.output_view.erase(self.output_view.begin_edit(), sublime.Region(0, self.output_view.size()))
-        self.output_view.insert(self.output_view.begin_edit(), 0, output)
-        self.output_view.end_edit(self.output_view.begin_edit())
-        self.output_view.set_read_only(True)
-        sublime.active_window().run_command('show_panel', {'panel': 'output.cli'})
+        sublime.active_window().run_command('webos_view_output', {'output': result})
 
     def get_appinfo_path(self, currentfile=None):
         if not currentfile:
