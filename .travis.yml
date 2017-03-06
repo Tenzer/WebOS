@@ -3,5 +3,5 @@ python:
   - '3.3'
 install: pip install pep8 pylint
 script:
-  - pep8 *.py
+  - pep8 --config .pep8rc *.py
   - pylint *.py
