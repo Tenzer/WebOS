@@ -1,0 +1,8 @@
+[MASTER]
+persistent = no
+
+[MESSAGES CONTROL]
+disable = line-too-long
+
+[REPORTS]
+reports = no

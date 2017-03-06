@@ -1,0 +1,7 @@
+language: python
+python:
+  - '3.3'
+install: pip install pep8 pylint
+script:
+  - pep8 *.py
+  - pylint *.py
