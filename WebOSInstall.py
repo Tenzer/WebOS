@@ -3,7 +3,7 @@ import os
 import sublime
 import sublime_plugin
 
-from .webOS import WebosCommand
+from .WebOS import WebosCommand
 
 
 class WebosInstallCommand(sublime_plugin.WindowCommand, WebosCommand):

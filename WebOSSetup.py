@@ -5,7 +5,7 @@ import os
 import sublime
 import sublime_plugin
 
-from .webOS import WebosCommand
+from .WebOS import WebosCommand
 
 
 class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
@@ -16,7 +16,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
         self.watch_data = []
         self.signage_data = []
         self.selected_target = -1
-        self.settings = sublime.load_settings('webOS.sublime-settings')
+        self.settings = sublime.load_settings('WebOS.sublime-settings')
 
         if not self.settings.get('CLIPATH'):
             if os.getenv('WEBOS_CLI_WD'):
@@ -44,7 +44,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
             }.get(self.device_data[index]['sdkType']),
         )
         self.settings.set('sdkType', self.device_data[index]['sdkType'])
-        sublime.save_settings('webOS.sublime-settings')
+        sublime.save_settings('WebOS.sublime-settings')
 
     def is_checked(self, index):
         return index == self.selected_target
@@ -78,7 +78,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
             if self.settings.get('sdkType') == 'Watch':
                 self.selected_target = len(self.tv_data)
             self.settings.set('target', self.device_data[self.selected_target]['name'])
-            sublime.save_settings('webOS.sublime-settings')
+            sublime.save_settings('WebOS.sublime-settings')
 
     def get_novacom_device_data(self):
         no_target = [{'name': 'No Targets'}]

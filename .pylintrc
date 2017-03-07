@@ -2,7 +2,16 @@
 persistent = no
 
 [MESSAGES CONTROL]
-disable = line-too-long, invalid-name, missing-docstring, too-few-public-methods, no-self-use
+disable =
+    arguments-differ,
+    duplicate-code,
+    fixme,
+    import-error,
+    line-too-long,
+    missing-docstring,
+    no-self-use,
+    too-few-public-methods,
+    unused-argument,
 
 [REPORTS]
 reports = no

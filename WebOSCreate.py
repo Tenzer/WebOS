@@ -3,7 +3,7 @@ import os
 import sublime
 import sublime_plugin
 
-from .webOS import WebosCommand
+from .WebOS import WebosCommand
 
 
 class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
@@ -38,7 +38,7 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
         sublime.active_window().show_input_panel('Input your application name', '', self.create_application, None, None)
 
     def create_application(self, name):
-        settings = sublime.load_settings('webOS.sublime-settings')
+        settings = sublime.load_settings('WebOS.sublime-settings')
         if isinstance(self.create_path, list):
             self.create_path = os.path.join(self.create_path[0], name)
         else:
@@ -97,7 +97,7 @@ class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
         if self.selected_index == -1:
             return
 
-        settings = sublime.load_settings('webOS.sublime-settings')
+        settings = sublime.load_settings('WebOS.sublime-settings')
 
         ares_command = os.path.join(self.get_cli_path(), 'ares-generate')
         # command = ['ares-generate', '-t', self.service_list[self.selected_index][0], self.create_path]

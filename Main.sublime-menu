@@ -1,6 +1,6 @@
 [{
-  "id": "webOSmenu",
-  "caption": "webOS",
+  "id": "WebOSmenu",
+  "caption": "WebOS",
   "command": "webos",
   "children": [{
     "id": "targetselectionmenu",
@@ -19,7 +19,7 @@
   },
   {
     "id": "createwebosapplicationmenu",
-    "caption": "Create webOS Application",
+    "caption": "Create WebOS Application",
     "command": "webos_create_application"
   },
   {

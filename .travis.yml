@@ -5,4 +5,4 @@ install: pip install pep8 pylint isort
 script:
   - pep8 --config .pep8rc *.py
   - isort --diff *py; isort --check-only *.py
-  - pylint *.py || exit 0
+  - pylint *.py

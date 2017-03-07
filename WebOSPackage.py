@@ -1,7 +1,7 @@
 import sublime
 import sublime_plugin
 
-from .webOS import WebosCommand
+from .WebOS import WebosCommand
 
 
 class WebosPackageCommand(sublime_plugin.WindowCommand, WebosCommand):

@@ -3,7 +3,7 @@ import os
 import sublime
 import sublime_plugin
 
-from .webOS import WebosCommand
+from .WebOS import WebosCommand
 
 
 class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
@@ -11,7 +11,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
     appinfo_data = None
 
     def run(self):
-        settings = sublime.load_settings('webOS.sublime-settings')
+        settings = sublime.load_settings('WebOS.sublime-settings')
 
         ares_command = os.path.join(self.get_cli_path(), 'ares-install')
         # command = ['ares-install', '-d', settings.get('target'), '-l']
@@ -19,7 +19,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
         self.run_command(command, callback=self.installedlist, status_message='checking the installed applications...')
 
     def installedlist(self, result):
-        settings = sublime.load_settings('webOS.sublime-settings')
+        settings = sublime.load_settings('WebOS.sublime-settings')
 
         # sometime installed list does not return
         if not result:
@@ -80,7 +80,6 @@ class WebosInstallLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
             return
 
         self.appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
-
         ipk = '{id}_{version}_all.ipk'.format(**self.appinfo_data)
 
         if not os.path.exists(os.path.join(appinfo_path, ipk)):
