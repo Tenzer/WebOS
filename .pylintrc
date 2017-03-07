@@ -5,7 +5,6 @@ persistent = no
 disable =
     arguments-differ,
     duplicate-code,
-    fixme,
     import-error,
     line-too-long,
     missing-docstring,

@@ -14,7 +14,6 @@ class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
     def run(self):
         self.template_list = []
 
-        # FIXME: This should be configurable
         self.create_path = os.path.join(os.getenv('USERHOME', os.path.expanduser('~')))
 
         ares_command = os.path.join(self.get_cli_path(), 'ares-generate')
