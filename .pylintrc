@@ -2,7 +2,7 @@
 persistent = no
 
 [MESSAGES CONTROL]
-disable = line-too-long
+disable = line-too-long, invalid-name, missing-docstring, too-few-public-methods, no-self-use
 
 [REPORTS]
 reports = no
