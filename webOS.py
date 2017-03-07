@@ -139,12 +139,12 @@ class WebosCommand(sublime_plugin.TextCommand):
 
     def package_action(self, mode='minify', callback=None, appinfo_path=None):
         print('Package Action')
+        appinfo_path = appinfo_path or self.get_appinfo_path()
         if not appinfo_path:
-            appinfo_path = self.get_appinfo_path()
+            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            return
 
-        ares_command = 'ares-package'
-        if self.get_cli_path():
-            ares_command = os.path.join(self.get_cli_path(), ares_command)
+        ares_command = os.path.join(self.get_cli_path(), 'ares-package')
 
         if mode == 'nominify':
             command = [ares_command, appinfo_path, '-o', appinfo_path, '--no-minify']
@@ -157,25 +157,26 @@ class WebosCommand(sublime_plugin.TextCommand):
 
     def install_action(self, ipk, callback=None, appinfo_path=None):
         print('Install Action')
-        settings = sublime.load_settings('webOS.sublime-settings')
+        appinfo_path = appinfo_path or self.get_appinfo_path()
         if not appinfo_path:
-            appinfo_path = self.get_appinfo_path()
-        ares_command = 'ares-install'
-        if self.get_cli_path():
-            ares_command = os.path.join(self.get_cli_path(), ares_command)
+            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            return
+
+        settings = sublime.load_settings('webOS.sublime-settings')
+
+        ares_command = os.path.join(self.get_cli_path(), 'ares-install')
         # command = ['ares-install', '-d', settings.get('target'), os.path.join(appinfo_path,ipk)]
         command = [ares_command, '-d', settings.get('target'), os.path.join(appinfo_path, ipk)]
         self.run_command(command, callback=callback, status_message='Installing the "{}" into {}'.format(ipk, settings.get('target')))
 
-    def launch_action(self, id, callback=None):
+    def launch_action(self, app_id, callback=None):
         print('Launch Action')
         settings = sublime.load_settings('webOS.sublime-settings')
-        ares_command = 'ares-launch'
-        if self.get_cli_path():
-            ares_command = os.path.join(self.get_cli_path(), ares_command)
-        # command = ['ares-launch', '-d', settings.get('target'), id]
-        command = [ares_command, '-d', settings.get('target'), id]
-        self.run_command(command, callback=callback, status_message='Launching the application({}) to {}'.format(id, settings.get('target')))
+
+        ares_command = os.path.join(self.get_cli_path(), 'ares-launch')
+        # command = ['ares-launch', '-d', settings.get('target'), app_id]
+        command = [ares_command, '-d', settings.get('target'), app_id]
+        self.run_command(command, callback=callback, status_message='Launching the application({}) to {}'.format(app_id, settings.get('target')))
 
     def get_sublime_path(self):
         if sublime.platform() == 'osx':
@@ -199,7 +200,7 @@ class WebosCommand(sublime_plugin.TextCommand):
 
     def get_cli_path(self):
         settings = sublime.load_settings('webOS.sublime-settings')
-        return os.getenv(settings.get('CLIPATH'))
+        return os.getenv(settings.get('CLIPATH')) or ''
 
     def is_visible(self):
         settings = sublime.load_settings('webOS.sublime-settings')
