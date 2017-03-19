@@ -1,0 +1,62 @@
+[
+  {
+    "caption": "WebOS: Create Application",
+    "command": "webos_create_project",
+    "args": {
+      "variant": "webapp"
+    }
+  },
+  {
+    "caption": "WebOS: Create JS Service",
+    "command": "webos_create_project",
+    "args": {
+      "variant": "jsservice"
+    }
+  },
+  {
+    "caption": "WebOS: Package - Non-minified",
+    "command": "webos_package",
+    "args": {
+      "mode": "nominify"
+    }
+  },
+  {
+    "caption": "WebOS: Package - Minified",
+    "command": "webos_package",
+    "args": {
+      "mode": "minify"
+    }
+  },
+  {
+    "caption": "WebOS: Run in Browser",
+    "command": "webos_preview"
+  },
+  {
+    "caption": "WebOS: Install",
+    "command": "webos_install"
+  },
+  {
+    "caption": "WebOS: Launch",
+    "command": "webos_launch"
+  },
+  {
+    "caption": "WebOS: Debug with Web Inspector",
+    "command": "webos_debug"
+  },
+  {
+    "caption": "WebOS: Install and Launch",
+    "command": "webos_install_launch"
+  },
+  {
+    "caption": "WebOS: Package, Install and Launch",
+    "command": "webos_package_install_launch"
+  },
+  {
+    "caption": "WebOS: Installed Application List",
+    "command": "webos_installedapp"
+  },
+  {
+    "caption": "WebOS: Running Application List",
+    "command": "webos_runningapp"
+  }
+]
