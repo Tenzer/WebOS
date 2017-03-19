@@ -100,6 +100,17 @@ class WebosCommand(sublime_plugin.TextCommand):
             return
         sublime.active_window().run_command('webos_view_output', {'output': result})
 
+    def get_default_path(self):
+        current_file_path = sublime.active_window().active_view().file_name()
+        if current_file_path:
+            current_file_path = os.path.dirname(current_file_path)
+        project_data = sublime.active_window().project_data()
+        if project_data:
+            project_path = project_data.get('folders', [{}])[0].get('path')
+        home_directory = os.path.expanduser('~')
+
+        return current_file_path or project_path or home_directory or ''
+
     def get_appinfo_path(self, currentfile=None):
         paths = [currentfile]
 

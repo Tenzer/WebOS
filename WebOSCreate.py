@@ -1,4 +1,5 @@
 import os
+import re
 
 import sublime
 import sublime_plugin
@@ -6,120 +7,61 @@ import sublime_plugin
 from .WebOS import WebosCommand
 
 
-class WebosCreateApplicationCommand(sublime_plugin.WindowCommand, WebosCommand):
-    template_list = []
-    selected_index = -1
-    create_path = None
+class WebosCreateProjectCommand(sublime_plugin.WindowCommand, WebosCommand):
+    variant = ''
+    templates = []
+    template = ''
+    project_name = ''
+    project_path = ''
 
-    def run(self):
-        self.template_list = []
-
-        self.create_path = os.path.join(os.getenv('USERHOME', os.path.expanduser('~')))
-
-        ares_command = os.path.join(self.get_cli_path(), 'ares-generate')
-        # command = ['ares-generate', '-l']
-        command = [ares_command, '-l', 'webapp']
-        self.run_command(command, callback=self.set_application_template_list, status_message='getting the template list...')
-
-    def set_application_template_list(self, result):
-        for bootplate in result.split('\n'):
-            if bootplate:
-                bootplate = bootplate.split(' ')
-                self.template_list.append(bootplate[0])
-
-        sublime.active_window().show_quick_panel(self.template_list, self.set_application_name)
-
-    def set_application_name(self, selected_index):
-        if selected_index == -1:
-            return
-
-        self.selected_index = selected_index
-        sublime.active_window().show_input_panel('Input your application name', '', self.create_application, None, None)
-
-    def create_application(self, name):
-        settings = sublime.load_settings('WebOS.sublime-settings')
-        if isinstance(self.create_path, list):
-            self.create_path = os.path.join(self.create_path[0], name)
-        else:
-            self.create_path = os.path.join(self.create_path, name)
+    def run(self, variant):
+        self.variant = variant
 
         ares_command = os.path.join(self.get_cli_path(), 'ares-generate')
-        # command = ['ares-generate', '-t', self.template_list[self.selected_index][0], self.create_path]
-        default_id = 'id=com.yourdomain.app'
-        if settings.get('sdkType') == 'Signage':
-            default_id = 'id=com.lg.app.signage'
-        command = [ares_command, '-t', self.template_list[self.selected_index], '-p', default_id, self.create_path]
-        self.run_command(command, callback=self.add_new_application, status_message='Generating the new application from template - ' + name)
+        command = [ares_command, '--list', self.variant]
+        self.run_command(command, callback=self.set_template_list, status_message='Getting list of templates')
 
-    def add_new_application(self, result):
-        if result.find('Success'):
-            self.add_folder_project(['-a', self.create_path])
+    def set_template_list(self, result):
+        self.templates.clear()
 
-        sublime.active_window().run_command('webos_view_output', {'output': result})
+        for line in result.split('\n'):
+            if line:
+                split_line = re.split(r'  +', line)
+                self.templates.append('{}: {}'.format(split_line[0], split_line[3].replace('(default)', '')))
 
+        sublime.active_window().show_quick_panel(self.templates, self.set_name)
 
-class WebosCreateServiceCommand(sublime_plugin.WindowCommand, WebosCommand):
-    service_list = []
-    selected_index = -1
-    create_path = None
-
-    def run(self, paths=None):
-        self.service_list = []
-
-        if not paths:
-            paths = os.path.join(os.getenv('USERHOME', os.path.expanduser('~')))
-        elif not os.path.isdir(paths[0]):
-            paths = os.path.dirname(paths[0])
-        self.create_path = paths
-
-        ares_command = os.path.join(self.get_cli_path(), 'ares-generate')
-        # command = ['ares-generate', '-l', 'webosService']
-        command = [ares_command, '-l', 'jsservice']
-        self.run_command(command, callback=self.set_services_list, status_message='getting the service template list...')
-
-    def set_services_list(self, result):
-        for bootplate in result.split('\n'):
-            if bootplate:
-                bootplate = bootplate.split(' ')
-                self.service_list.append(bootplate[0])
-
-        sublime.active_window().show_quick_panel(self.service_list, self.set_service_name)
-
-    def set_service_name(self, selected_index):
-        if selected_index == -1:
+    def set_name(self, template_index):
+        if template_index == -1:
             return
 
-        self.selected_index = selected_index
-        sublime.active_window().show_input_panel('Input your service name', '', self.create_service, None, None)
+        self.template, _ = self.templates[template_index].split(':', 1)
 
-    def create_service(self, name):
-        if self.selected_index == -1:
-            return
+        sublime.active_window().show_input_panel('Input name', '', self.set_path, None, None)
+
+    def set_path(self, project_name):
+        self.project_name = project_name
+
+        sublime.active_window().show_input_panel('Input path', self.get_default_path(), self.create_project, None, None)
+
+    def create_project(self, project_path):
+        self.project_path = project_path
 
         settings = sublime.load_settings('WebOS.sublime-settings')
+        application_id = 'id=com.example.app'
+        if settings.get('sdkType') == 'Signage':
+            application_id = 'id=com.lg.app.signage'
 
         ares_command = os.path.join(self.get_cli_path(), 'ares-generate')
-        # command = ['ares-generate', '-t', self.service_list[self.selected_index][0], self.create_path]
-
-        if settings.get('sdkType') == 'Signage':
-            name = 'com.lg.app.signage.' + name
-
-        self.create_path = os.path.join(self.create_path, name)
-        command = [ares_command, '-t', self.service_list[self.selected_index], '-s', name, self.create_path]
-
-        self.run_command(command, callback=self.add_new_service, status_message='Generating the new application from template')
-
-    def add_new_service(self, result):
-        if result.find('Success'):
-            self.add_folder_project(['-a', self.create_path])
-        sublime.active_window().run_command('webos_view_output', {'output': result})
-
-    def is_enabled(self, paths=None):
-        if not paths:
-            appinfo_path = self.get_appinfo_path()
-        elif not os.path.isdir(paths[0]):
-            appinfo_path = self.get_appinfo_path(currentfile=paths[0])
+        if self.variant == 'webapp':
+            command = [ares_command, '--template', self.template, '--property', application_id, self.project_path]
         else:
-            appinfo_path = paths[0]
+            command = [ares_command, '--template', self.template, '--servicename', self.project_name, self.project_path]
 
-        return not bool(self.get_appinfo_data(appinfo_path=appinfo_path))
+        self.run_command(command, callback=self.add_project, status_message='Generating new project "{}" ({})'.format(self.project_name, self.project_path))
+
+    def add_project(self, result):
+        if 'Success' in result:
+            self.add_folder_project(['-a', self.project_path])
+
+        sublime.active_window().run_command('webos_view_output', {'output': result})

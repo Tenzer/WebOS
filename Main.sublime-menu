@@ -1,111 +1,119 @@
-[{
-  "id": "WebOSmenu",
-  "caption": "WebOS",
-  "command": "webos",
-  "children": [{
-    "id": "targetselectionmenu",
-    "caption": "Select Target Device",
-    "children":[
-      { "command": "webos_set_target", "args": {"index": 0}, "checkbox": true },
-      { "command": "webos_set_target", "args": {"index": 1}, "checkbox": true },
-      { "command": "webos_set_target", "args": {"index": 2}, "checkbox": true },
-      { "command": "webos_set_target", "args": {"index": 3}, "checkbox": true },
-      { "command": "webos_set_target", "args": {"index": 4}, "checkbox": true },
-      { "command": "webos_set_target", "args": {"index": 5}, "checkbox": true }
+[
+  {
+    "id": "WebOSmenu",
+    "caption": "WebOS",
+    "command": "webos",
+    "children": [
+      {
+        "id": "targetselectionmenu",
+        "caption": "Select Target Device",
+        "children": [
+          { "command": "webos_set_target", "args": {"index": 0}, "checkbox": true },
+          { "command": "webos_set_target", "args": {"index": 1}, "checkbox": true },
+          { "command": "webos_set_target", "args": {"index": 2}, "checkbox": true },
+          { "command": "webos_set_target", "args": {"index": 3}, "checkbox": true },
+          { "command": "webos_set_target", "args": {"index": 4}, "checkbox": true },
+          { "command": "webos_set_target", "args": {"index": 5}, "checkbox": true }
+        ]
+      },
+      {
+        "caption": "-"
+      },
+      {
+        "caption": "Create WebOS Application",
+        "command": "webos_create_project",
+        "args": {
+          "variant": "webapp"
+        }
+      },
+      {
+        "caption": "Create JS Service",
+        "command": "webos_create_project",
+        "args": {
+          "variant": "jsservice"
+        }
+      },
+      {
+        "caption": "-"
+      },
+      {
+        "id": "packageasnonminifymenu",
+        "caption": "Package - Non-minified",
+        "command": "webos_package",
+        "args": {
+          "mode": "nominify"
+        }
+      },
+      {
+        "id": "packageasminifymenu",
+        "caption": "Package - Minified",
+        "command": "webos_package",
+        "args": {
+          "mode": "minify"
+        }
+      },
+      {
+        "caption": "-"
+      },
+      {
+        "id": "previewmenu",
+        "caption": "Run in Browser",
+        "command": "webos_preview"
+      },
+      {
+        "id": "installmenu",
+        "caption": "Install",
+        "command": "webos_install"
+      },
+      {
+        "id": "launchmenu",
+        "caption": "Launch",
+        "command": "webos_launch"
+      },
+      {
+        "id": "Debugmenu",
+        "caption": "Debug with Web Inspector",
+        "command": "webos_debug"
+      },
+      {
+        "caption": "-"
+      },
+      {
+        "id": "installlaunchmenu",
+        "caption": "Install and Launch",
+        "command": "webos_install_launch"
+      },
+      {
+        "id": "packageinstalllaunchmenu",
+        "caption": "Package, Install and Launch",
+        "command": "webos_package_install_launch"
+      },
+      {
+        "caption": "-"
+      },
+      {
+        "id": "launchinstalledappmenu",
+        "caption": "Installed Application List",
+        "command": "webos_installedapp"
+      },
+      {
+        "id": "closeappmenu",
+        "caption": "Running Application List",
+        "command": "webos_runningapp"
+      },
+      {
+        "caption": "-"
+      },
+      {
+        "id": "webospluginversion",
+        "caption": "Help",
+        "command": "webos_sdk_help"
+      },
+      {
+        "id": "webospluginversion",
+        "caption": "About",
+        "command": "webos_sdk_version"
+      }
     ]
-  },
-  {
-    "caption": "-"
-  },
-  {
-    "id": "createwebosapplicationmenu",
-    "caption": "Create WebOS Application",
-    "command": "webos_create_application"
-  },
-  {
-    "id": "createwebosservicemenu",
-    "caption": "Create JS Service",
-    "command": "webos_create_service"
-  },
-  {
-    "caption": "-"
-  },
-  {
-    "id": "packageasnonminifymenu",
-    "caption": "Package - Non-minified",
-    "command": "webos_package",
-    "args":{
-      "mode":"nominify"
-    }
-  },
-  {
-    "id": "packageasminifymenu",
-    "caption": "Package - Minified",
-    "command": "webos_package",
-    "args":{
-      "mode":"minify"
-    }
-  },
-  {
-    "caption": "-"
-  },
-  {
-    "id": "previewmenu",
-    "caption": "Run in Browser",
-    "command": "webos_preview"
-  },
-  {
-    "id": "installmenu",
-    "caption": "Install",
-    "command": "webos_install"
-  },
-  {
-    "id": "launchmenu",
-    "caption": "Launch",
-    "command": "webos_launch"
-  },
-  {
-    "id": "Debugmenu",
-    "caption": "Debug with Web Inspector",
-    "command": "webos_debug"
-  },
-  {
-    "caption": "-"
-  },
-  {
-    "id": "installlaunchmenu",
-    "caption": "Install and Launch",
-    "command": "webos_install_launch"
-  },
-  {
-    "id": "packageinstalllaunchmenu",
-    "caption": "Package, Install and Launch",
-    "command": "webos_package_install_launch"
-  },
-  {
-    "caption": "-"
-  },
-  {
-    "id": "launchinstalledappmenu",
-    "caption": "Installed Application List",
-    "command": "webos_installedapp"
-  },
-  {
-    "id": "closeappmenu",
-    "caption": "Running Application List",
-    "command": "webos_runningapp"
-  },
-  {
-    "caption": "-"
-  },
-  {
-    "id":"webospluginversion",
-    "caption":"Help",
-    "command":"webos_sdk_help"
-  },
-  {
-    "id":"webospluginversion",
-    "caption":"About",
-    "command":"webos_sdk_version"
-  }]
-}]
+  }
+]
