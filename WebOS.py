@@ -105,8 +105,7 @@ class WebosCommand(sublime_plugin.TextCommand):
         if current_file_path:
             current_file_path = os.path.dirname(current_file_path)
         project_data = sublime.active_window().project_data()
-        if project_data:
-            project_path = project_data.get('folders', [{}])[0].get('path')
+        project_path = project_data.get('folders', [{}])[0].get('path') if project_data else None
         home_directory = os.path.expanduser('~')
 
         return current_file_path or project_path or home_directory or ''
