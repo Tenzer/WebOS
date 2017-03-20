@@ -67,7 +67,7 @@ class WebosPreviewCommand(sublime_plugin.WindowCommand, WebosCommand):
 
         ares_command = os.path.join(self.get_cli_path(), 'ares-server')
         command = [ares_command, '-o', os.path.join(appinfo_path, 'dist')]
-        self.run_command(command, show_status=False)
+        self.run_command(command, show_status=False, callback=lambda: None)
 
 
 class WebosInstallLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
