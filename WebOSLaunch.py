@@ -59,15 +59,26 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
 
 
 class WebosPreviewCommand(sublime_plugin.WindowCommand, WebosCommand):
+    appinfo_path = ''
+
     def run(self):
-        appinfo_path = self.get_appinfo_path()
-        if not appinfo_path:
+        self.appinfo_path = self.get_appinfo_path()
+        if not self.appinfo_path:
             sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
             return
 
+        if os.path.exists(os.path.join(self.appinfo_path, 'index.html')):
+            self.start_server(self.appinfo_path)
+        else:
+            self.package_action(mode='nominify', callback=self.package_done, appinfo_path=self.appinfo_path)
+
+    def package_done(self, result):
+        self.start_server(os.path.join(self.appinfo_path, 'dist'))
+
+    def start_server(self, path):
         ares_command = os.path.join(self.get_cli_path(), 'ares-server')
-        command = [ares_command, '-o', os.path.join(appinfo_path, 'dist')]
-        self.run_command(command, show_status=False, callback=lambda: None)
+        command = [ares_command, '-o', path]
+        self.run_command(command, show_status=False, callback=lambda *args: None)
 
 
 class WebosInstallLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
