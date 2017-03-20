@@ -31,7 +31,7 @@ class WebosLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
 
         self.appinfo_path = self.get_appinfo_path(self.appinfo_path)
         if not self.appinfo_path:
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
         self.appinfo_data = self.get_appinfo_data(appinfo_path=self.appinfo_path)
@@ -64,7 +64,7 @@ class WebosPreviewCommand(sublime_plugin.WindowCommand, WebosCommand):
     def run(self):
         self.appinfo_path = self.get_appinfo_path()
         if not self.appinfo_path:
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
         if os.path.exists(os.path.join(self.appinfo_path, 'index.html')):
@@ -87,16 +87,17 @@ class WebosInstallLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
     def run(self):
         appinfo_path = self.get_appinfo_path()
         if not appinfo_path:
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
         self.appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
         ipk = '{id}_{version}_all.ipk'.format(**self.appinfo_data)
 
         if not os.path.exists(os.path.join(appinfo_path, ipk)):
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR : "{}" does not exist.'.format(ipk)})
-        else:
-            self.install_action(self.ipk, callback=self.install_done, appinfo_path=appinfo_path)
+            sublime.error_message('ERROR: "{}" does not exist.'.format(ipk))
+            return
+
+        self.install_action(self.ipk, callback=self.install_done, appinfo_path=appinfo_path)
 
     def install_done(self, result):
         if result.find('Error') != -1:
@@ -113,7 +114,7 @@ class WebosPackageInstallLaunchCommand(sublime_plugin.WindowCommand, WebosComman
     def run(self):
         self.appinfo_path = self.get_appinfo_path(self.appinfo_path)
         if not self.appinfo_path:
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
         self.appinfo_data = self.get_appinfo_data(appinfo_path=self.appinfo_path)

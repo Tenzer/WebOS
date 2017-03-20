@@ -151,7 +151,7 @@ class WebosCommand(sublime_plugin.TextCommand):
         print('Package Action')
         appinfo_path = appinfo_path or self.get_appinfo_path()
         if not appinfo_path:
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
         ares_command = os.path.join(self.get_cli_path(), 'ares-package')
@@ -169,7 +169,7 @@ class WebosCommand(sublime_plugin.TextCommand):
         print('Install Action')
         appinfo_path = appinfo_path or self.get_appinfo_path()
         if not appinfo_path:
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
         settings = sublime.load_settings('WebOS.sublime-settings')

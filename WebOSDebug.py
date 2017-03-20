@@ -12,7 +12,7 @@ class WebosDebugCommand(sublime_plugin.WindowCommand, WebosCommand):
 
         appinfo_path = self.get_appinfo_path()
         if not appinfo_path:
-            sublime.active_window().run_command('webos_view_output', {'output': 'ERROR: "appinfo.json" could not be found.'})
+            sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
         appinfo_data = self.get_appinfo_data(appinfo_path=appinfo_path)
