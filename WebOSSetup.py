@@ -11,6 +11,7 @@ from .WebOS import WebosCommand
 class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
     def __init__(self, window):
         sublime_plugin.WindowCommand.__init__(self, window)
+        WebosCommand.__init__(self, window)
         self.device_data = []
         self.tv_data = []
         self.watch_data = []
