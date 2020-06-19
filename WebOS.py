@@ -237,5 +237,9 @@ class WebosCommand(sublime_plugin.TextCommand):
                 settings.set('CLIPATH', 'PARTNER_CLI_TV')
                 settings.set('sdkType', 'PartnerTV')
                 return True
+            elif os.getenv('WEBOS_CLI_COMMERCIALTV'):
+                settings.set('CLIPATH', 'WEBOS_CLI_COMMERCIALTV')
+                settings.set('sdkType', 'CommercialTV')
+                return True
 
         return False

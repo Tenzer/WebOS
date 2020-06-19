@@ -29,6 +29,9 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
             elif os.getenv('PARTNER_CLI_TV'):
                 self.settings.set('CLIPATH', 'PARTNER_CLI_TV')
                 self.settings.set('sdkType', 'PartnerTV')
+            elif os.getenv('WEBOS_CLI_COMMERCIALTV'):
+                self.settings.set('CLIPATH', 'WEBOS_CLI_COMMERCIALTV')
+                self.settings.set('sdkType', 'CommercialTV')
             else:
                 self.settings.set('CLIPATH', 'WEBOS_CLI_TV')
                 self.settings.set('sdkType', 'TV')
@@ -42,6 +45,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                 'Watch': 'WEBOS_CLI_WD',
                 'Signage': 'WEBOS_CLI_SIGNAGE',
                 'PartnerTV': 'PARTNER_CLI_TV',
+                'CommercialTV': 'WEBOS_CLI_COMMERCIALTV',
             }.get(self.device_data[index]['sdkType']),
         )
         self.settings.set('sdkType', self.device_data[index]['sdkType'])
@@ -60,7 +64,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
             self.set_selected_target_no()
 
         if index < len(self.device_data):
-            if any([os.getenv(i) for i in ['WEBOS_CLI_TV', 'WEBOS_CLI_WD', 'WEBOS_CLI_SIGNAGE', 'PARTNER_CLI_TV']]):
+            if any([os.getenv(i) for i in ['WEBOS_CLI_TV', 'WEBOS_CLI_WD', 'WEBOS_CLI_SIGNAGE', 'PARTNER_CLI_TV', 'WEBOS_CLI_COMMERCIALTV']]):
                 return '{name} ({sdkType})'.format(**self.device_data[index])
             return self.device_data[index]['name']
 
@@ -87,6 +91,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
         self.tv_data = []
         self.watch_data = []
         self.signage_data = []
+        self.commercialtv_data = []
         if os.getenv('WEBOS_CLI_TV'):
             try:
                 self.tv_data = json.loads(self.get_target_list(cli_path='WEBOS_CLI_TV')) or copy.copy(no_target)
@@ -122,3 +127,12 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                     self.device_data.append(data)
             except ValueError:
                 print('Signage CLI ERROR')
+
+        if os.getenv('WEBOS_CLI_COMMERCIALTV'):
+            try:
+                self.commercialtv_data = json.loads(self.get_target_list(CLIPATH='WEBOS_CLI_COMMERCIALTV')) or copy.copy(no_target)
+                for data in self.commercialtv_data:
+                    data['sdkType'] = 'CommercialTV'
+                    self.device_data.append(data)
+            except ValueError:
+                print('Commercial TV CLI ERROR')
