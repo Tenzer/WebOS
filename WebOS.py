@@ -21,16 +21,22 @@ class CliThread(threading.Thread):
 
     def run(self):
         try:
-            shell = os.name == 'nt'
-            proc = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell, universal_newlines=True)
-            output = proc.communicate()[0] or ''
+            shell = os.name == "nt"
+            proc = subprocess.Popen(
+                self.command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                shell=shell,
+                universal_newlines=True,
+            )
+            output = proc.communicate()[0] or ""
             main_thread(self.command_done, output)
         except subprocess.CalledProcessError as error:
             main_thread(self.command_done, error.returncode)
 
 
 class ThreadProgress(object):
-    '''
+    """
     Animates an indicator, [=   ], in the status area while a thread runs
 
     :param thread:
@@ -41,7 +47,7 @@ class ThreadProgress(object):
 
     :param success_message:
         The message to display once the thread is complete
-    '''
+    """
 
     def __init__(self, thread, message, success_message):
         self.thread = thread
@@ -53,8 +59,8 @@ class ThreadProgress(object):
 
     def run(self, i):
         if not self.thread.is_alive():
-            if hasattr(self.thread, 'result') and not self.thread.result:
-                sublime.status_message('')
+            if hasattr(self.thread, "result") and not self.thread.result:
+                sublime.status_message("")
                 return
             sublime.status_message(self.success_message)
             return
@@ -62,7 +68,7 @@ class ThreadProgress(object):
         before = i % self.size
         after = self.size - 1 - before
 
-        sublime.status_message('{} [{}={}]'.format(self.message, ' ' * before, ' ' * after))
+        sublime.status_message("{} [{}={}]".format(self.message, " " * before, " " * after))
 
         if not after:
             self.addend = -1
@@ -74,13 +80,13 @@ class ThreadProgress(object):
 
 
 class WebosViewOutputCommand(sublime_plugin.TextCommand):
-    def run(self, edit, output=''):
-        view = sublime.active_window().get_output_panel('cli')
+    def run(self, edit, output=""):
+        view = sublime.active_window().get_output_panel("cli")
         view.set_read_only(False)
         view.erase(edit, sublime.Region(0, view.size()))
         view.insert(edit, 0, output)
         view.set_read_only(True)
-        sublime.active_window().run_command('show_panel', {'panel': 'output.cli'})
+        sublime.active_window().run_command("show_panel", {"panel": "output.cli"})
 
 
 class WebosCommand(sublime_plugin.TextCommand):
@@ -92,31 +98,31 @@ class WebosCommand(sublime_plugin.TextCommand):
         thread.start()
 
         if show_status:
-            message = status_message or ' '.join(command)
-            ThreadProgress(thread, message, '')
+            message = status_message or " ".join(command)
+            ThreadProgress(thread, message, "")
 
     def command_done(self, result):
         if not result.strip():
             return
-        sublime.active_window().run_command('webos_view_output', {'output': result})
+        sublime.active_window().run_command("webos_view_output", {"output": result})
 
     def get_default_path(self):
         current_file_path = sublime.active_window().active_view().file_name()
         if current_file_path:
             current_file_path = os.path.dirname(current_file_path)
         project_data = sublime.active_window().project_data()
-        project_path = project_data.get('folders', [{}])[0].get('path') if project_data else None
-        home_directory = os.path.expanduser('~')
+        project_path = project_data.get("folders", [{}])[0].get("path") if project_data else None
+        home_directory = os.path.expanduser("~")
 
-        return current_file_path or project_path or home_directory or ''
+        return current_file_path or project_path or home_directory or ""
 
     def get_appinfo_path(self, currentfile=None):
         paths = [currentfile]
 
         project_data = sublime.active_window().project_data()
         if project_data:
-            for folder in project_data.get('folders', {}):
-                paths.append(folder.get('path'))
+            for folder in project_data.get("folders", {}):
+                paths.append(folder.get("path"))
 
         paths.append(sublime.active_window().active_view().file_name())
 
@@ -128,7 +134,7 @@ class WebosCommand(sublime_plugin.TextCommand):
                 path = os.path.dirname(path)
 
             while True:
-                if os.path.exists(os.path.join(path, 'appinfo.json')):
+                if os.path.exists(os.path.join(path, "appinfo.json")):
                     return path
 
                 if os.path.dirname(path) == path:
@@ -141,58 +147,75 @@ class WebosCommand(sublime_plugin.TextCommand):
     def get_appinfo_data(self, appinfo_path=None):
         appinfo_path = appinfo_path or self.get_appinfo_path()
 
-        if appinfo_path and os.path.exists(os.path.join(appinfo_path, 'appinfo.json')):
-            with open(os.path.join(appinfo_path, 'appinfo.json'), 'rt') as appinfo_file:
+        if appinfo_path and os.path.exists(os.path.join(appinfo_path, "appinfo.json")):
+            with open(os.path.join(appinfo_path, "appinfo.json"), "rt") as appinfo_file:
                 return json.load(appinfo_file)
 
         return False
 
-    def package_action(self, mode='minify', callback=None, appinfo_path=None):
-        print('Package Action')
+    def package_action(self, mode="minify", callback=None, appinfo_path=None):
+        print("Package Action")
         appinfo_path = appinfo_path or self.get_appinfo_path()
         if not appinfo_path:
             sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
-        ares_command = os.path.join(self.get_cli_path(), 'ares-package')
+        ares_command = os.path.join(self.get_cli_path(), "ares-package")
 
-        if mode == 'nominify':
-            command = [ares_command, appinfo_path, '-o', appinfo_path, '--no-minify']
-        elif mode == 'rom':
-            command = [ares_command, appinfo_path, '-o', appinfo_path, '--rom']
+        if mode == "nominify":
+            command = [ares_command, appinfo_path, "-o", appinfo_path, "--no-minify"]
+        elif mode == "rom":
+            command = [ares_command, appinfo_path, "-o", appinfo_path, "--rom"]
         else:
-            command = [ares_command, appinfo_path, '-o', appinfo_path]
+            command = [ares_command, appinfo_path, "-o", appinfo_path]
 
-        self.run_command(command, callback=callback, status_message='Packaging the application - ' + appinfo_path)
+        self.run_command(
+            command,
+            callback=callback,
+            status_message="Packaging the application - " + appinfo_path,
+        )
 
     def install_action(self, ipk, callback=None, appinfo_path=None):
-        print('Install Action')
+        print("Install Action")
         appinfo_path = appinfo_path or self.get_appinfo_path()
         if not appinfo_path:
             sublime.error_message('ERROR: "appinfo.json" could not be found.')
             return
 
-        settings = sublime.load_settings('WebOS.sublime-settings')
+        settings = sublime.load_settings("WebOS.sublime-settings")
 
-        ares_command = os.path.join(self.get_cli_path(), 'ares-install')
+        ares_command = os.path.join(self.get_cli_path(), "ares-install")
         # command = ['ares-install', '-d', settings.get('target'), os.path.join(appinfo_path,ipk)]
-        command = [ares_command, '-d', settings.get('target'), os.path.join(appinfo_path, ipk)]
-        self.run_command(command, callback=callback, status_message='Installing the "{}" into {}'.format(ipk, settings.get('target')))
+        command = [
+            ares_command,
+            "-d",
+            settings.get("target"),
+            os.path.join(appinfo_path, ipk),
+        ]
+        self.run_command(
+            command,
+            callback=callback,
+            status_message='Installing the "{}" into {}'.format(ipk, settings.get("target")),
+        )
 
     def launch_action(self, app_id, callback=None):
-        print('Launch Action')
-        settings = sublime.load_settings('WebOS.sublime-settings')
+        print("Launch Action")
+        settings = sublime.load_settings("WebOS.sublime-settings")
 
-        ares_command = os.path.join(self.get_cli_path(), 'ares-launch')
+        ares_command = os.path.join(self.get_cli_path(), "ares-launch")
         # command = ['ares-launch', '-d', settings.get('target'), app_id]
-        command = [ares_command, '-d', settings.get('target'), app_id]
-        self.run_command(command, callback=callback, status_message='Launching the application({}) to {}'.format(app_id, settings.get('target')))
+        command = [ares_command, "-d", settings.get("target"), app_id]
+        self.run_command(
+            command,
+            callback=callback,
+            status_message="Launching the application({}) to {}".format(app_id, settings.get("target")),
+        )
 
     def get_sublime_path(self):
-        if sublime.platform() == 'osx':
-            return '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'
-        if sublime.platform() == 'linux':
-            return open('/proc/self/cmdline').read().split(chr(0))[0]
+        if sublime.platform() == "osx":
+            return "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
+        if sublime.platform() == "linux":
+            return open("/proc/self/cmdline").read().split(chr(0))[0]
         return sys.executable
 
     def add_folder_project(self, args):
@@ -200,46 +223,52 @@ class WebosCommand(sublime_plugin.TextCommand):
         return subprocess.Popen(args)
 
     def get_target_list(self, cli_path=None):
-        shell = os.name == 'nt'
-        ares_command = 'ares-setup-device'
+        shell = os.name == "nt"
+        ares_command = "ares-setup-device"
         if cli_path is not None:
             ares_command = os.path.join(os.getenv(cli_path), ares_command)
-        command = [ares_command, '-F']
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell, universal_newlines=True)
-        return proc.communicate()[0] or ''
+        command = [ares_command, "-F"]
+        proc = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=shell,
+            universal_newlines=True,
+        )
+        return proc.communicate()[0] or ""
 
     def get_cli_path(self):
-        settings = sublime.load_settings('WebOS.sublime-settings')
-        return os.getenv(settings.get('CLIPATH')) or ''
+        settings = sublime.load_settings("WebOS.sublime-settings")
+        return os.getenv(settings.get("CLIPATH")) or ""
 
     def is_visible(self):
-        settings = sublime.load_settings('WebOS.sublime-settings')
-        if not os.getenv(settings.get('CLIPATH', '')):
-            settings.erase('CLIPATH')
+        settings = sublime.load_settings("WebOS.sublime-settings")
+        if not os.getenv(settings.get("CLIPATH", "")):
+            settings.erase("CLIPATH")
 
-        if os.getenv(settings.get('CLIPATH', '')):
+        if os.getenv(settings.get("CLIPATH", "")):
             return True
 
-        if not settings.get('CLIPATH'):
-            if os.getenv('WEBOS_CLI_WD'):
-                settings.set('CLIPATH', 'WEBOS_CLI_WD')
-                settings.set('sdkType', 'Watch')
+        if not settings.get("CLIPATH"):
+            if os.getenv("WEBOS_CLI_WD"):
+                settings.set("CLIPATH", "WEBOS_CLI_WD")
+                settings.set("sdkType", "Watch")
                 return True
-            elif os.getenv('WEBOS_CLI_TV'):
-                settings.set('CLIPATH', 'WEBOS_CLI_TV')
-                settings.set('sdkType', 'TV')
+            elif os.getenv("WEBOS_CLI_TV"):
+                settings.set("CLIPATH", "WEBOS_CLI_TV")
+                settings.set("sdkType", "TV")
                 return True
-            elif os.getenv('WEBOS_CLI_SIGNAGE'):
-                settings.set('CLIPATH', 'WEBOS_CLI_SIGNAGE')
-                settings.set('sdkType', 'Signage')
+            elif os.getenv("WEBOS_CLI_SIGNAGE"):
+                settings.set("CLIPATH", "WEBOS_CLI_SIGNAGE")
+                settings.set("sdkType", "Signage")
                 return True
-            elif os.getenv('PARTNER_CLI_TV'):
-                settings.set('CLIPATH', 'PARTNER_CLI_TV')
-                settings.set('sdkType', 'PartnerTV')
+            elif os.getenv("PARTNER_CLI_TV"):
+                settings.set("CLIPATH", "PARTNER_CLI_TV")
+                settings.set("sdkType", "PartnerTV")
                 return True
-            elif os.getenv('WEBOS_CLI_COMMERCIALTV'):
-                settings.set('CLIPATH', 'WEBOS_CLI_COMMERCIALTV')
-                settings.set('sdkType', 'CommercialTV')
+            elif os.getenv("WEBOS_CLI_COMMERCIALTV"):
+                settings.set("CLIPATH", "WEBOS_CLI_COMMERCIALTV")
+                settings.set("sdkType", "CommercialTV")
                 return True
 
         return False
