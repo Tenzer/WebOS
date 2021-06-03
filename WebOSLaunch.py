@@ -115,8 +115,8 @@ class WebosInstallLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):
         if result.find("Error") != -1:
             sublime.active_window().run_command("webos_view_output", {"output": result})
             return
-        else:
-            self.launch_action(self.appinfo_data["id"])
+
+        self.launch_action(self.appinfo_data["id"])
 
 
 class WebosPackageInstallLaunchCommand(sublime_plugin.WindowCommand, WebosCommand):

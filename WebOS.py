@@ -22,20 +22,20 @@ class CliThread(threading.Thread):
     def run(self):
         try:
             shell = os.name == "nt"
-            proc = subprocess.Popen(
+            with subprocess.Popen(
                 self.command,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 shell=shell,
                 universal_newlines=True,
-            )
-            output = proc.communicate()[0] or ""
+            ) as proc:
+                output = proc.communicate()[0] or ""
             main_thread(self.command_done, output)
         except subprocess.CalledProcessError as error:
             main_thread(self.command_done, error.returncode)
 
 
-class ThreadProgress(object):
+class ThreadProgress:
     """
     Animates an indicator, [=   ], in the status area while a thread runs
 
@@ -220,7 +220,8 @@ class WebosCommand(sublime_plugin.TextCommand):
 
     def add_folder_project(self, args):
         args.insert(0, self.get_sublime_path())
-        return subprocess.Popen(args)
+        with subprocess.Popen(args) as proc:
+            return proc
 
     def get_target_list(self, cli_path=None):
         shell = os.name == "nt"
@@ -228,20 +229,20 @@ class WebosCommand(sublime_plugin.TextCommand):
         if cli_path is not None:
             ares_command = os.path.join(os.getenv(cli_path), ares_command)
         command = [ares_command, "-F"]
-        proc = subprocess.Popen(
+        with subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             shell=shell,
             universal_newlines=True,
-        )
-        return proc.communicate()[0] or ""
+        ) as proc:
+            return proc.communicate()[0] or ""
 
     def get_cli_path(self):
         settings = sublime.load_settings("WebOS.sublime-settings")
         return os.getenv(settings.get("CLIPATH")) or ""
 
-    def is_visible(self):
+    def is_visible(self):  # pylint: disable=too-many-return-statements
         settings = sublime.load_settings("WebOS.sublime-settings")
         if not os.getenv(settings.get("CLIPATH", "")):
             settings.erase("CLIPATH")
@@ -254,19 +255,23 @@ class WebosCommand(sublime_plugin.TextCommand):
                 settings.set("CLIPATH", "WEBOS_CLI_WD")
                 settings.set("sdkType", "Watch")
                 return True
-            elif os.getenv("WEBOS_CLI_TV"):
+
+            if os.getenv("WEBOS_CLI_TV"):
                 settings.set("CLIPATH", "WEBOS_CLI_TV")
                 settings.set("sdkType", "TV")
                 return True
-            elif os.getenv("WEBOS_CLI_SIGNAGE"):
+
+            if os.getenv("WEBOS_CLI_SIGNAGE"):
                 settings.set("CLIPATH", "WEBOS_CLI_SIGNAGE")
                 settings.set("sdkType", "Signage")
                 return True
-            elif os.getenv("PARTNER_CLI_TV"):
+
+            if os.getenv("PARTNER_CLI_TV"):
                 settings.set("CLIPATH", "PARTNER_CLI_TV")
                 settings.set("sdkType", "PartnerTV")
                 return True
-            elif os.getenv("WEBOS_CLI_COMMERCIALTV"):
+
+            if os.getenv("WEBOS_CLI_COMMERCIALTV"):
                 settings.set("CLIPATH", "WEBOS_CLI_COMMERCIALTV")
                 settings.set("sdkType", "CommercialTV")
                 return True

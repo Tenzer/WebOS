@@ -65,7 +65,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
 
         if index < len(self.device_data):
             if any(
-                [
+                (
                     os.getenv(i)
                     for i in [
                         "WEBOS_CLI_TV",
@@ -74,7 +74,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
                         "PARTNER_CLI_TV",
                         "WEBOS_CLI_COMMERCIALTV",
                     ]
-                ]
+                )
             ):
                 return "{name} ({sdkType})".format(**self.device_data[index])
             return self.device_data[index]["name"]
@@ -104,7 +104,7 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
         self.tv_data = []
         self.watch_data = []
         self.signage_data = []
-        self.commercialtv_data = []
+
         if os.getenv("WEBOS_CLI_TV"):
             try:
                 self.tv_data = json.loads(self.get_target_list(cli_path="WEBOS_CLI_TV")) or copy.copy(no_target)
@@ -145,10 +145,10 @@ class WebosSetTargetCommand(sublime_plugin.WindowCommand, WebosCommand):
 
         if os.getenv("WEBOS_CLI_COMMERCIALTV"):
             try:
-                self.commercialtv_data = json.loads(
-                    self.get_target_list(CLIPATH="WEBOS_CLI_COMMERCIALTV")
-                ) or copy.copy(no_target)
-                for data in self.commercialtv_data:
+                commercialtv_data = json.loads(self.get_target_list(CLIPATH="WEBOS_CLI_COMMERCIALTV")) or copy.copy(
+                    no_target
+                )
+                for data in commercialtv_data:
                     data["sdkType"] = "CommercialTV"
                     self.device_data.append(data)
             except ValueError:

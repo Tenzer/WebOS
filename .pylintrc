@@ -3,14 +3,19 @@ persistent = no
 
 [MESSAGES CONTROL]
 disable =
-    arguments-differ,
     duplicate-code,
     import-error,
+    invalid-name,
     line-too-long,
-    missing-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    missing-module-docstring,
     no-self-use,
+    relative-beyond-top-level,
     too-few-public-methods,
+    too-many-branches,
     unused-argument,
 
 [REPORTS]
 reports = no
+score = no

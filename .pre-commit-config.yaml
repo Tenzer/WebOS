@@ -9,3 +9,8 @@ repos:
     rev: 5.8.0
     hooks:
       - id: isort
+
+  - repo: https://github.com/PyCQA/pylint
+    rev: v2.8.3
+    hooks:
+      - id: pylint
